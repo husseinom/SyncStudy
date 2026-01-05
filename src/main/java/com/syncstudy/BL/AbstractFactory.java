@@ -5,6 +5,7 @@ import com.syncstudy.BL.ProfileManager.ProfileDAO;
 import com.syncstudy.BL.SessionManager.UserDAO;
 import com.syncstudy.BL.AdminManager.AdminDAO;
 import com.syncstudy.BL.GroupManager.GroupDAO;
+import com.syncstudy.BL.GroupMembership.GroupMembershipDAO;
 import com.syncstudy.BL.GroupManager.CategoryDAO;
 import com.syncstudy.BL.ReportsManager.ReportsDAO;
 
@@ -35,10 +36,16 @@ public abstract class AbstractFactory {
     public abstract ProfileDAO createProfileDAO();
     public abstract CategoryDAO createCategoryDAO();
     public abstract SharedFileDAO createSharedFileDAO();
-    
+
     /**
      * Creates a ReportsDAO instance
      * @return ReportsDAO implementation
      */
     public abstract ReportsDAO createReportsDAO();
+
+    /**
+     * Creates a GroupMembershipDAO instance
+     * @return GroupMembershipDAO implementation
+     */
+    public abstract GroupMembershipDAO createGroupMembershipDAO();
 }
