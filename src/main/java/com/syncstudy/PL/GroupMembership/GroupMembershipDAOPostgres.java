@@ -26,9 +26,65 @@ public class GroupMembershipDAOPostgres extends GroupMembershipDAO {
         try (Connection conn = dbConnection.getConnection()) {
             createTableJoinRequests(conn);
             createTableGroupMembers(conn);
+            syncGroupCreatorsAsMembers(conn);
             System.out.println("GroupMembership database tables initialized successfully.");
         } catch (SQLException e) {
             System.err.println("Error initializing GroupMembership database: " + e.getMessage());
+        }
+    }
+    
+    private void syncGroupCreatorsAsMembers(Connection conn) {
+        // Add group creators as Group Admin members if not already in group_members
+        String sql = """
+            INSERT INTO group_members (user_id, group_id, role, joined_date)
+            SELECT g.creator_id, g.group_id, 'Group Admin', g.created_at
+            FROM groups g
+            WHERE NOT EXISTS (
+                SELECT 1 FROM group_members gm 
+                WHERE gm.user_id = g.creator_id AND gm.group_id = g.group_id
+            )
+            ON CONFLICT (user_id, group_id) DO NOTHING
+        """;
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int inserted = stmt.executeUpdate();
+            if (inserted > 0) {
+                System.out.println("Synced " + inserted + " group creators as members.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error syncing group creators: " + e.getMessage());
+        }
+        
+        // Add some test members to groups (users 1-5 to first 3 groups)
+        addTestMembersIfEmpty(conn);
+    }
+    
+    private void addTestMembersIfEmpty(Connection conn) {
+        // Check if group_members is mostly empty
+        String checkSql = "SELECT COUNT(*) FROM group_members";
+        try (PreparedStatement checkStmt = conn.prepareStatement(checkSql);
+             ResultSet rs = checkStmt.executeQuery()) {
+            
+            if (rs.next() && rs.getInt(1) < 5) {
+                // Add test members: users to groups
+                String insertSql = """
+                    INSERT INTO group_members (user_id, group_id, role, joined_date)
+                    SELECT u.id, g.group_id, 'Member', NOW()
+                    FROM users u
+                    CROSS JOIN (SELECT group_id FROM groups ORDER BY group_id LIMIT 3) g
+                    WHERE u.id <= 10
+                    ON CONFLICT (user_id, group_id) DO NOTHING
+                """;
+                
+                try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+                    int inserted = stmt.executeUpdate();
+                    if (inserted > 0) {
+                        System.out.println("Added " + inserted + " test members to groups.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error adding test members: " + e.getMessage());
         }
     }
     
@@ -609,9 +665,32 @@ public class GroupMembershipDAOPostgres extends GroupMembershipDAO {
     
     @Override
     public boolean canManageGroup(Long userId, Long groupId) {
+        // Check if user is System Admin first
+        if (isSystemAdmin(userId)) {
+            return true;
+        }
+        // Then check if user is Group Admin for this specific group
         return isGroupAdmin(userId, groupId);
     }
     
+    private boolean isSystemAdmin(Long userId) {
+        String sql = "SELECT 1 FROM users WHERE id = ? AND is_admin = TRUE";
+        
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setLong(1, userId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Error checking system admin status: " + e.getMessage());
+            return false;
+        }
+    }
+
     @Override
     public int getMemberCount(Long groupId) {
         String sql = """

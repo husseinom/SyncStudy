@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.syncstudy.UI.GroupMembership.GroupMembershipController"
+      prefWidth="700" prefHeight="500" stylesheets="@membership-styles.css">
+   
+   <!-- Header -->
+   <HBox alignment="CENTER_LEFT" styleClass="header">
+      <Label fx:id="groupNameLabel" text="Gestion du Groupe" styleClass="title"/>
+      <Region HBox.hgrow="ALWAYS"/>
+      <Button text="Rafraîchir" onAction="#onRefresh"/>
+      <Button text="Fermer" onAction="#onClose"/>
+      <padding>
+         <Insets bottom="10" left="15" right="15" top="10"/>
+      </padding>
+   </HBox>
+
+   <!-- TabPane pour les différentes sections -->
+   <TabPane fx:id="tabPane" VBox.vgrow="ALWAYS">
+      
+      <!-- Onglet Membres -->
+      <Tab text="Membres" closable="false">
+         <VBox spacing="10">
+            <padding>
+               <Insets bottom="10" left="10" right="10" top="10"/>
+            </padding>
+            
+            <TableView fx:id="membersTable" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="memberIdColumn" text="ID" prefWidth="60"/>
+                  <TableColumn fx:id="memberUserIdColumn" text="User ID" prefWidth="80"/>
+                  <TableColumn fx:id="memberRoleColumn" text="Rôle" prefWidth="120"/>
+               </columns>
+            </TableView>
+            
+            <HBox spacing="10" alignment="CENTER">
+               <Button text="Assigner Rôle" onAction="#assignRole"/>
+               <Button text="Bannir" onAction="#banMember" styleClass="danger-btn"/>
+               <Button text="Quitter le groupe" onAction="#leaveGroup"/>
+            </HBox>
+         </VBox>
+      </Tab>
+      
+      <!-- Onglet Demandes -->
+      <Tab text="Demandes" closable="false">
+         <VBox spacing="10">
+            <padding>
+               <Insets bottom="10" left="10" right="10" top="10"/>
+            </padding>
+            
+            <TableView fx:id="requestsTable" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="requestIdColumn" text="ID" prefWidth="60"/>
+                  <TableColumn fx:id="requestUserIdColumn" text="User ID" prefWidth="80"/>
+                  <TableColumn fx:id="requestMessageColumn" text="Message" prefWidth="200"/>
+                  <TableColumn fx:id="requestStatusColumn" text="Statut" prefWidth="100"/>
+               </columns>
+            </TableView>
+            
+            <HBox spacing="10" alignment="CENTER">
+               <Button text="Approuver" onAction="#approveRequest" styleClass="success-btn"/>
+               <Button text="Rejeter" onAction="#rejectRequest" styleClass="danger-btn"/>
+            </HBox>
+         </VBox>
+      </Tab>
+      
+      <!-- Onglet Bannis -->
+      <Tab text="Bannis" closable="false">
+         <VBox spacing="10">
+            <padding>
+               <Insets bottom="10" left="10" right="10" top="10"/>
+            </padding>
+            
+            <TableView fx:id="bannedTable" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="bannedUserIdColumn" text="User ID" prefWidth="100"/>
+                  <TableColumn fx:id="bannedReasonColumn" text="Raison" prefWidth="300"/>
+               </columns>
+            </TableView>
+            
+            <HBox spacing="10" alignment="CENTER">
+               <Button text="Débannir" onAction="#unbanMember"/>
+            </HBox>
+         </VBox>
+      </Tab>
+      
+   </TabPane>
+</VBox>

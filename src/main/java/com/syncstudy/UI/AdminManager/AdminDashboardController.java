@@ -24,6 +24,7 @@ public class AdminDashboardController {
     @FXML private Button usersButton;
     @FXML private Button categoriesButton;
     @FXML private Button reportsButton;
+    @FXML private Button membershipButton;
     @FXML private Label welcomeLabel;
 
     private AdminFacade adminFacade;
@@ -66,6 +67,19 @@ public class AdminDashboardController {
             updateButtonStyles(usersButton);
         } catch (IOException e) {
             showError("Failed to load User Management: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void handleManageMembership() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/syncstudy/UI/AdminManager/GroupList.fxml"));
+            Parent groupList = loader.load();
+            mainPane.setCenter(groupList);
+            updateButtonStyles(membershipButton);
+        } catch (IOException e) {
+            showError("Failed to load Group List: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -139,6 +153,9 @@ public class AdminDashboardController {
         }
         if (reportsButton != null) {
             reportsButton.setStyle(defaultStyle);
+        }
+        if (membershipButton != null) {
+            membershipButton.setStyle(defaultStyle);
         }
 
         // Set active button

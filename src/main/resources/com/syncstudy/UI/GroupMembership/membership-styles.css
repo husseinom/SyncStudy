@@ -1,0 +1,80 @@
+/* Styles pour GroupMembership */
+
+.header {
+    -fx-background-color: #3498db;
+    -fx-padding: 10;
+}
+
+.title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.header .button {
+    -fx-background-color: white;
+    -fx-text-fill: #3498db;
+    -fx-cursor: hand;
+    -fx-margin: 0 5 0 5;
+}
+
+.header .button:hover {
+    -fx-background-color: #ecf0f1;
+}
+
+/* Boutons */
+.button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-padding: 8 15;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.success-btn {
+    -fx-background-color: #27ae60;
+}
+
+.success-btn:hover {
+    -fx-background-color: #219a52;
+}
+
+.danger-btn {
+    -fx-background-color: #e74c3c;
+}
+
+.danger-btn:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* Tables */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #bdc3c7;
+}
+
+.table-view .column-header {
+    -fx-background-color: #ecf0f1;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+/* Tabs */
+.tab-pane .tab {
+    -fx-background-color: #ecf0f1;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #3498db;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: white;
+}

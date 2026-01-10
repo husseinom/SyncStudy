@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="com.syncstudy.UI.AdminManager.GroupListController"
+      spacing="15" style="-fx-background-color: #f8f9fa;">
+    
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="Gestion des Groupes" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="searchField" promptText="Rechercher un groupe..." prefWidth="250"/>
+        <Button text="Rechercher" onAction="#onSearch"/>
+        <Button text="Rafraîchir" onAction="#onRefresh"/>
+    </HBox>
+
+    <!-- Groups Table -->
+    <TableView fx:id="groupsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="60"/>
+            <TableColumn fx:id="nameColumn" text="Nom du Groupe" prefWidth="200"/>
+            <TableColumn fx:id="categoryColumn" text="Catégorie" prefWidth="150"/>
+            <TableColumn fx:id="memberCountColumn" text="Membres" prefWidth="80"/>
+            <TableColumn fx:id="createdAtColumn" text="Date création" prefWidth="120"/>
+            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="200"/>
+        </columns>
+    </TableView>
+
+    <!-- Info -->
+    <HBox alignment="CENTER_LEFT">
+        <Label fx:id="infoLabel" text="Double-cliquez sur un groupe pour gérer les membres"/>
+    </HBox>
+
+</VBox>

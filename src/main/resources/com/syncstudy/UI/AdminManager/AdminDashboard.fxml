@@ -30,7 +30,7 @@
                 <Label text="MANAGEMENT"
                        style="-fx-text-fill: #6c757d; -fx-font-size: 11px; -fx-padding: 10 20 5 20;"/>
 
-                <Button fx:id="usersButton" text="👥 Manage Users"
+                <Button fx:id="usersButton" text="  Manage Users"
                         onAction="#handleManageUsers"
                         prefWidth="220"
                         style="-fx-background-color: #495057; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-font-size: 13px;"/>

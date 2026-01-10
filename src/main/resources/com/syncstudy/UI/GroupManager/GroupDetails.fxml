@@ -56,9 +56,21 @@
          </padding>
       </VBox>
 
-      <!-- Close Button -->
+      <!-- Membership Status -->
       <HBox alignment="CENTER">
          <children>
+            <Label fx:id="membershipStatusLabel" text="" style="-fx-font-size: 12px; -fx-padding: 5 10; -fx-background-radius: 5;"/>
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+         </padding>
+      </HBox>
+
+      <!-- Buttons -->
+      <HBox alignment="CENTER" spacing="10">
+         <children>
+            <Button fx:id="joinButton" text="Rejoindre le groupe" onAction="#onRequestJoin" style="-fx-background-color: #27ae60; -fx-text-fill: white;" />
+            <Button fx:id="leaveButton" text="Quitter le groupe" onAction="#onLeaveGroup" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" visible="false"/>
             <Button fx:id="closeButton" onAction="#onClose" text="Fermer" />
          </children>
          <padding>
