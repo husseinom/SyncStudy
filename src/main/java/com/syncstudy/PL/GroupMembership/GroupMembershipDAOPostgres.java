@@ -26,65 +26,9 @@ public class GroupMembershipDAOPostgres extends GroupMembershipDAO {
         try (Connection conn = dbConnection.getConnection()) {
             createTableJoinRequests(conn);
             createTableGroupMembers(conn);
-            syncGroupCreatorsAsMembers(conn);
             System.out.println("GroupMembership database tables initialized successfully.");
         } catch (SQLException e) {
             System.err.println("Error initializing GroupMembership database: " + e.getMessage());
-        }
-    }
-    
-    private void syncGroupCreatorsAsMembers(Connection conn) {
-        // Add group creators as Group Admin members if not already in group_members
-        String sql = """
-            INSERT INTO group_members (user_id, group_id, role, joined_date)
-            SELECT g.creator_id, g.group_id, 'Group Admin', g.created_at
-            FROM groups g
-            WHERE NOT EXISTS (
-                SELECT 1 FROM group_members gm 
-                WHERE gm.user_id = g.creator_id AND gm.group_id = g.group_id
-            )
-            ON CONFLICT (user_id, group_id) DO NOTHING
-        """;
-        
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            int inserted = stmt.executeUpdate();
-            if (inserted > 0) {
-                System.out.println("Synced " + inserted + " group creators as members.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error syncing group creators: " + e.getMessage());
-        }
-        
-        // Add some test members to groups (users 1-5 to first 3 groups)
-        addTestMembersIfEmpty(conn);
-    }
-    
-    private void addTestMembersIfEmpty(Connection conn) {
-        // Check if group_members is mostly empty
-        String checkSql = "SELECT COUNT(*) FROM group_members";
-        try (PreparedStatement checkStmt = conn.prepareStatement(checkSql);
-             ResultSet rs = checkStmt.executeQuery()) {
-            
-            if (rs.next() && rs.getInt(1) < 5) {
-                // Add test members: users to groups
-                String insertSql = """
-                    INSERT INTO group_members (user_id, group_id, role, joined_date)
-                    SELECT u.id, g.group_id, 'Member', NOW()
-                    FROM users u
-                    CROSS JOIN (SELECT group_id FROM groups ORDER BY group_id LIMIT 3) g
-                    WHERE u.id <= 10
-                    ON CONFLICT (user_id, group_id) DO NOTHING
-                """;
-                
-                try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
-                    int inserted = stmt.executeUpdate();
-                    if (inserted > 0) {
-                        System.out.println("Added " + inserted + " test members to groups.");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error adding test members: " + e.getMessage());
         }
     }
     
@@ -229,19 +173,17 @@ public class GroupMembershipDAOPostgres extends GroupMembershipDAO {
     }
     
     @Override
-    public JoinRequest getJoinRequestByUserAndGroup(Long userId, Long groupId) {
+    public JoinRequest getJoinRequestById(Long requestId) {
         String sql = """
             SELECT request_id, user_id, group_id, request_date, status, message, rejection_reason
             FROM join_requests
-            WHERE user_id = ? AND group_id = ? AND status = 'Pending'
-            ORDER BY request_date DESC LIMIT 1
+            WHERE request_id = ?
         """;
         
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setLong(1, userId);
-            stmt.setLong(2, groupId);
+            stmt.setLong(1, requestId);
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -258,7 +200,7 @@ public class GroupMembershipDAOPostgres extends GroupMembershipDAO {
             }
             
         } catch (SQLException e) {
-            throw new RuntimeException("Error getting join request: " + e.getMessage(), e);
+            throw new RuntimeException("Error getting join request by ID: " + e.getMessage(), e);
         }
         
         return null;
@@ -287,44 +229,6 @@ public class GroupMembershipDAOPostgres extends GroupMembershipDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Error updating join request status: " + e.getMessage(), e);
         }
-    }
-    
-    @Override
-    public List<JoinRequest> getUserJoinRequests(Long userId) {
-        String sql = """
-            SELECT request_id, user_id, group_id, request_date, status, message, rejection_reason
-            FROM join_requests
-            WHERE user_id = ?
-            ORDER BY request_date DESC
-        """;
-        
-        List<JoinRequest> requests = new ArrayList<>();
-        
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setLong(1, userId);
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    JoinRequest request = new JoinRequest(
-                        rs.getLong("request_id"),
-                        rs.getLong("user_id"),
-                        rs.getLong("group_id"),
-                        rs.getTimestamp("request_date").toLocalDateTime(),
-                        rs.getString("status"),
-                        rs.getString("message"),
-                        rs.getString("rejection_reason")
-                    );
-                    requests.add(request);
-                }
-            }
-            
-        } catch (SQLException e) {
-            throw new RuntimeException("Error getting user join requests: " + e.getMessage(), e);
-        }
-        
-        return requests;
     }
     
     // ====================================================
@@ -714,32 +618,5 @@ public class GroupMembershipDAOPostgres extends GroupMembershipDAO {
         }
         
         return 0;
-    }
-    
-    @Override
-    public List<Long> getUserGroups(Long userId) {
-        String sql = """
-            SELECT group_id FROM group_members
-            WHERE user_id = ? AND is_banned = FALSE
-        """;
-        
-        List<Long> groupIds = new ArrayList<>();
-        
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setLong(1, userId);
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    groupIds.add(rs.getLong("group_id"));
-                }
-            }
-            
-        } catch (SQLException e) {
-            throw new RuntimeException("Error getting user groups: " + e.getMessage(), e);
-        }
-        
-        return groupIds;
     }
 }

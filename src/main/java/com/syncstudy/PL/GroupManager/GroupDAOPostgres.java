@@ -115,7 +115,8 @@ public class GroupDAOPostgres extends GroupDAO {
     public Group findGroupById(Long id) {
         String sql = """
             SELECT g.*, c.category_id, c.name as category_name, c.description as category_desc, 
-                   c.icon as category_icon, c.color as category_color
+                   c.icon as category_icon, c.color as category_color,
+                   (SELECT COUNT(*) FROM group_members gm WHERE gm.group_id = g.group_id AND gm.is_banned = FALSE) as actual_member_count
             FROM groups g 
             LEFT JOIN categories c ON g.category_id = c.category_id 
             WHERE g.group_id = ?
@@ -144,7 +145,8 @@ public class GroupDAOPostgres extends GroupDAO {
                                    Optional<LocalDateTime> activityFilter) {
         StringBuilder sql = new StringBuilder("""
             SELECT g.*, c.category_id, c.name as category_name, c.description as category_desc, 
-                   c.icon as category_icon, c.color as category_color
+                   c.icon as category_icon, c.color as category_color,
+                   (SELECT COUNT(*) FROM group_members gm WHERE gm.group_id = g.group_id AND gm.is_banned = FALSE) as actual_member_count
             FROM groups g 
             LEFT JOIN categories c ON g.category_id = c.category_id 
             WHERE 1=1
@@ -153,7 +155,7 @@ public class GroupDAOPostgres extends GroupDAO {
         List<Object> parameters = new ArrayList<>();
         
         if (memberCountFilter.isPresent()) {
-            sql.append(" AND g.member_count >= ?");
+            sql.append(" AND (SELECT COUNT(*) FROM group_members gm WHERE gm.group_id = g.group_id AND gm.is_banned = FALSE) >= ?");
             parameters.add(memberCountFilter.get());
         }
         
@@ -180,7 +182,8 @@ public class GroupDAOPostgres extends GroupDAO {
         
         StringBuilder sql = new StringBuilder("""
             SELECT g.*, c.category_id, c.name as category_name, c.description as category_desc, 
-                   c.icon as category_icon, c.color as category_color
+                   c.icon as category_icon, c.color as category_color,
+                   (SELECT COUNT(*) FROM group_members gm WHERE gm.group_id = g.group_id AND gm.is_banned = FALSE) as actual_member_count
             FROM groups g 
             LEFT JOIN categories c ON g.category_id = c.category_id 
             WHERE 
@@ -244,7 +247,12 @@ public class GroupDAOPostgres extends GroupDAO {
             group.setLastActivity(lastActivity.toLocalDateTime());
         }
         
-        group.setMemberCount(rs.getInt("member_count"));
+        // Utiliser actual_member_count (calculé dynamiquement) si disponible, sinon member_count
+        try {
+            group.setMemberCount(rs.getInt("actual_member_count"));
+        } catch (SQLException e) {
+            group.setMemberCount(rs.getInt("member_count"));
+        }
         group.setIcon(rs.getString("icon"));
         
         // Map category if present

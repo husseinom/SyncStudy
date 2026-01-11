@@ -65,7 +65,9 @@ public class GroupDetailsFrame {
             categoryLabel.setText("Catégorie: Aucune");
         }
         
-        memberCountLabel.setText("Membres: " + currentGroup.getMemberCount());
+        // Utiliser le comptage dynamique des membres depuis la table group_members
+        int actualMemberCount = membership.getMemberCount(currentGroup.getGroupId());
+        memberCountLabel.setText("Membres: " + actualMemberCount);
         
         if (currentGroup.getCreatedAt() != null) {
             String date = currentGroup.getCreatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));

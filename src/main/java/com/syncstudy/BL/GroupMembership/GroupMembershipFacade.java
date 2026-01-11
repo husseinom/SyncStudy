@@ -130,16 +130,6 @@ public class GroupMembershipFacade {
     }
     
     /**
-     * Check if user can join group
-     * @param userId User ID
-     * @param groupId Group ID
-     * @return true if user can join, false otherwise
-     */
-    public boolean canUserJoinGroup(Long userId, Long groupId) {
-        return membershipManager.canUserJoinGroup(userId, groupId);
-    }
-    
-    /**
      * Get user's membership status for group
      * @param userId User ID
      * @param groupId Group ID
@@ -147,5 +137,14 @@ public class GroupMembershipFacade {
      */
     public String getUserMembershipStatus(Long userId, Long groupId) {
         return membershipManager.getUserMembershipStatus(userId, groupId);
+    }
+    
+    /**
+     * Get the actual member count for a group (excluding banned members)
+     * @param groupId Group ID
+     * @return Number of active members
+     */
+    public int getMemberCount(Long groupId) {
+        return membershipManager.getMemberCount(groupId);
     }
 }
