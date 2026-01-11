@@ -147,4 +147,14 @@ public class GroupMembershipFacade {
     public int getMemberCount(Long groupId) {
         return membershipManager.getMemberCount(groupId);
     }
+
+    /**
+     * Check if user is a member of the group
+     * @param userId User ID
+     * @param groupId Group ID
+     * @return true if user is member
+     */
+    public boolean isMember(Long userId, Long groupId) {
+        return membershipManager.isMember(userId, groupId);
+    }
 }

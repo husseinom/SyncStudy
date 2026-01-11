@@ -41,7 +41,6 @@
             <HBox spacing="10" alignment="CENTER">
                <Button text="Assigner Rôle" onAction="#assignRole"/>
                <Button text="Bannir" onAction="#banMember" styleClass="danger-btn"/>
-               <Button text="Quitter le groupe" onAction="#leaveGroup"/>
             </HBox>
          </VBox>
       </Tab>

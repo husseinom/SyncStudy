@@ -15,10 +15,15 @@
                     onAction="#handleBackToGroups"
                     style="-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 14;"/>
             <Label fx:id="groupNameLabel" text="Unknown Group" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
             <Button fx:id="viewFilesButton"
                     text="Files"
                     onAction="#handleViewFiles"
                     style="-fx-background-color: white; -fx-text-fill: black;"/>
+            <Button fx:id="leaveGroupButton"
+                    text="Leave Group"
+                    onAction="#handleLeaveGroup"
+                    style="-fx-background-color: #ff5722; -fx-text-fill: white;"/>
         </HBox>
     </top>
 

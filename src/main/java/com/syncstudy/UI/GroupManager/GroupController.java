@@ -4,6 +4,7 @@ import com.syncstudy.BL.SessionManager.SessionFacade;
 import com.syncstudy.BL.GroupManager.GroupFacade;
 import com.syncstudy.BL.GroupManager.Group;
 import com.syncstudy.BL.GroupManager.Category;
+import com.syncstudy.BL.GroupMembership.GroupMembershipFacade;
 import com.syncstudy.BL.SessionManager.User;
 import com.syncstudy.UI.ChatManager.ChatController;
 import com.syncstudy.UI.ProfileManager.UserDashboardController;
@@ -226,6 +227,21 @@ public class GroupController {
 
     private void openChatForGroup(Group selectedGroup) {
         try {
+            // Check if user is a member of the group
+            SessionFacade sf = this.session != null ? this.session : SessionFacade.getInstance();
+            User currentUser = sf.getCurrentUser();
+            if (currentUser == null) {
+                showError("No logged-in user found.");
+                return;
+            }
+
+            // Verify membership before opening chat
+            GroupMembershipFacade membershipFacade = GroupMembershipFacade.getInstance();
+            if (!currentUser.isAdmin() && !membershipFacade.isMember(currentUser.getId(), selectedGroup.getGroupId())) {
+                showError("You must be a member of this group to access the chat.");
+                return;
+            }
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/syncstudy/UI/chat.fxml"));
             Parent root = loader.load();
             Object ctrl = loader.getController();
@@ -235,12 +251,6 @@ public class GroupController {
             }
             ChatController chatController = (ChatController) ctrl;
 
-            SessionFacade sf = this.session != null ? this.session : SessionFacade.getInstance();
-            User currentUser = sf.getCurrentUser();
-            if (currentUser == null) {
-                showError("No logged-in user found.");
-                return;
-            }
             chatController.setCurrentUser(currentUser.getId(), currentUser.isAdmin());
             chatController.startRealtime(AppConfig.getChatHost(), AppConfig.getChatPort());
             chatController.setCurrentGroup(selectedGroup.getGroupId());

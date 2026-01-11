@@ -299,4 +299,14 @@ public class GroupMembershipManager {
     public int getMemberCount(Long groupId) {
         return membershipDAO.getMemberCount(groupId);
     }
+
+    /**
+     * Check if user is a member of the group
+     * @param userId User ID
+     * @param groupId Group ID
+     * @return true if user is member
+     */
+    public boolean isMember(Long userId, Long groupId) {
+        return membershipDAO.isUserMember(userId, groupId);
+    }
 }

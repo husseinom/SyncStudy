@@ -4,6 +4,7 @@ import com.syncstudy.BL.ChatManager.ChatFacade;
 import com.syncstudy.BL.ChatManager.Message;
 import com.syncstudy.BL.FileManager.FileFacade;
 import com.syncstudy.BL.FileManager.SharedFile;
+import com.syncstudy.BL.GroupMembership.GroupMembershipFacade;
 import com.syncstudy.BL.ReportsManager.ReportsFacade;
 import com.syncstudy.UI.FileManager.FileDetailsController;
 import com.syncstudy.UI.FileManager.FileListController;
@@ -41,9 +42,11 @@ public class ChatController {
     @FXML private Label groupNameLabel;
     @FXML private Button backButton;
     @FXML private Button viewFilesButton;
+    @FXML private Button leaveGroupButton;
 
     private ChatFacade messageService;
     private FileFacade fileService;
+    private GroupMembershipFacade membershipFacade;
     private Long currentUserId;
     private Long currentGroupId;
     private boolean isAdmin;
@@ -53,6 +56,7 @@ public class ChatController {
     public void initialize() {
         messageService = ChatFacade.getInstance();
         fileService = FileFacade.getInstance();
+        membershipFacade = GroupMembershipFacade.getInstance();
         errorLabel.setVisible(false);
 
         messageContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
@@ -79,6 +83,24 @@ public class ChatController {
             }
         } catch (IOException e) {
             showError("Cannot open groups: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleLeaveGroup() {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Leave Group");
+        confirm.setHeaderText("Leave this group?");
+        confirm.setContentText("You will no longer be able to access this group's chat and files.");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                membershipFacade.leaveGroup(currentUserId, currentGroupId);
+                showSuccess("You have left the group.");
+                handleBackToGroups(null);
+            } catch (Exception e) {
+                showError("Error leaving group: " + e.getMessage());
+            }
         }
     }
 

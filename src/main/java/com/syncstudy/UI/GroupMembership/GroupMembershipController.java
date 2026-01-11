@@ -125,25 +125,6 @@ public class GroupMembershipController {
         }
     }
 
-    // Demander à rejoindre un groupe
-    @FXML
-    public void requestJoin() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Demande d'adhésion");
-        dialog.setHeaderText("Rejoindre le groupe");
-        dialog.setContentText("Message (optionnel):");
-        
-        dialog.showAndWait().ifPresent(message -> {
-            try {
-                Long userId = session.getCurrentUser().getId();
-                membership.requestToJoinGroup(userId, currentGroupId, message);
-                showInfo("Demande envoyée avec succès!");
-            } catch (Exception e) {
-                showError("Erreur: " + e.getMessage());
-            }
-        });
-    }
-    
     // Approuver une demande
     @FXML
     public void approveRequest() {
@@ -186,25 +167,6 @@ public class GroupMembershipController {
                 showError("Erreur: " + e.getMessage());
             }
         });
-    }
-    
-    // Quitter le groupe
-    @FXML
-    public void leaveGroup() {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Quitter le groupe");
-        confirm.setContentText("Voulez-vous vraiment quitter ce groupe?");
-        
-        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-            try {
-                Long userId = session.getCurrentUser().getId();
-                membership.leaveGroup(userId, currentGroupId);
-                showInfo("Vous avez quitté le groupe.");
-                closeWindow();
-            } catch (Exception e) {
-                showError("Erreur: " + e.getMessage());
-            }
-        }
     }
     
     // Bannir un membre
