@@ -266,4 +266,150 @@ public class UserDAOPostgres extends UserDAO {
             return false;
         }
     }
+
+    @Override
+    public Long createUser(String username, String passwordHash, String email, String fullName, String university, String department) {
+        String sql = "INSERT INTO users (username, password_hash, email, full_name, university, department, profile_photo, last_login) VALUES (?, ?, ?, ?, ?, ?, NULL, NOW()) " +
+                "ON CONFLICT (username) DO NOTHING";
+        boolean ok = false;
+        try (Connection conn = dbConnection.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, passwordHash);
+            pstmt.setString(3, email);
+            pstmt.setString(4, fullName);
+            pstmt.setString(5, university);
+            pstmt.setString(6, department);
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("User '" + username + "' created successfully.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error creating user: " + e.getMessage());
+        }
+
+        String sql2 = "SELECT id FROM users WHERE username=?";
+        try (Connection conn = this.dbConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql2)) {
+            pstmt.setString(1, username);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("id");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error verifying user registration: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean deleteUser(Long id) {
+        String sql = "DELETE FROM users WHERE id=?";
+        boolean ok = false;
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, id);
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                ok = true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error deleting user: " + e.getMessage());
+        }
+        return ok;
+    }
+
+    @Override
+    public User findUserById(Long id) {
+        // Use columns that should exist after table extension
+        String sql = "SELECT id, username, password_hash, " +
+                "COALESCE(email, '') as email, " +
+                "COALESCE(full_name, '') as full_name, " +
+                "COALESCE(university, '') as university, " +
+                "COALESCE(department, '') as department, " +
+                "COALESCE(is_blocked, FALSE) as is_blocked, " +
+                "COALESCE(is_admin, FALSE) as is_admin " +
+                "FROM users WHERE id = ?";
+
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getLong("id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setPasswordHash(rs.getString("password_hash"));
+                    user.setEmail(rs.getString("email"));
+                    user.setFullName(rs.getString("full_name"));
+                    user.setUniversity(rs.getString("university"));
+                    user.setDepartment(rs.getString("department"));
+                    user.setBlocked(rs.getBoolean("is_blocked"));
+                    user.setAdmin(rs.getBoolean("is_admin"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding user: " + e.getMessage());
+            // Fallback: try with basic columns only
+            return findUserByIdBasic(id);
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean updateUser(Long userId, String username, String passwordHash, String email, String fullname, String university, String department) {
+        String sql = "UPDATE users SET username=?, password_hash=?, email=?, full_name=?, university=?, department=? WHERE id=?";
+        try (Connection conn = this.dbConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, passwordHash);
+            pstmt.setString(3, email);
+            pstmt.setString(4, fullname);
+            pstmt.setString(5, university);
+            pstmt.setString(6, department);
+            pstmt.setLong(7, userId);
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("User '" + username + "' updated successfully.");
+            }
+            return rows > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating user: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Fallback method using only basic columns
+     */
+    private User findUserByIdBasic(Long id) {
+        String sql = "SELECT id, username, password_hash FROM users WHERE id = ?";
+
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, id);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getLong("id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setPasswordHash(rs.getString("password_hash"));
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding user (basic): " + e.getMessage());
+        }
+
+        return null;
+    }
 }

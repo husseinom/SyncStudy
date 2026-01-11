@@ -1,5 +1,8 @@
 package com.syncstudy.BL.ChatManager;
 
+import com.syncstudy.BL.GroupManager.Group;
+import com.syncstudy.BL.GroupManager.GroupManager;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -158,5 +161,19 @@ public class ChatFacade {
             return true;
         }
         return canEditMessage(messageId, userId);
+    }
+    public String getGroupName(Long groupId) {
+        if (groupId == null) return "Unknown Group";
+        try {
+            Group group = GroupManager.getInstance().findGroupById(groupId);
+            if (group != null) {
+                String name = group.getName();
+                if (name != null && !name.isBlank()) return name;
+            }
+            return "Unknown Group";
+        } catch (Exception e) {
+            System.err.println("Error fetching group name: " + e.getMessage());
+            return "Unknown Group";
+        }
     }
 }

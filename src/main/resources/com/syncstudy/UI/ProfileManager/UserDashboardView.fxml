@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/21"
+            fx:id="mainPane"
+            fx:controller="com.syncstudy.UI.ProfileManager.UserDashboardController"
+            prefWidth="1100" prefHeight="700">
+
+    <!-- Sidebar -->
+    <left>
+        <VBox fx:id="sidebar" prefWidth="220" style="-fx-background-color: #343a40;">
+            <padding>
+                <Insets top="20" right="0" bottom="20" left="0"/>
+            </padding>
+
+            <!-- Logo/Title -->
+            <VBox alignment="CENTER" style="-fx-padding: 0 20 30 20;">
+                <Label text="SyncStudy"
+                       style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                <Label text="User Panel"
+                       style="-fx-text-fill: #6c757d; -fx-font-size: 12px;"/>
+            </VBox>
+
+            <!-- Navigation -->
+            <VBox spacing="5">
+                <Label text="ACCOUNT"
+                       style="-fx-text-fill: #6c757d; -fx-font-size: 11px; -fx-padding: 10 20 5 20;"/>
+
+                <Button fx:id="profileButton" text="  View Profile"
+                        onAction="#handleViewOwnProfile"
+                        prefWidth="220"
+                        style="-fx-background-color: #495057; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-font-size: 13px;"/>
+                <!-- replace with profile picture eventually ? -->
+
+                <Button fx:id="updateButton" text="  Update Information"
+                        onAction="#handleUpdateAccount"
+                        prefWidth="220"
+                        style="-fx-background-color: #495057; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-font-size: 13px;"/>
+
+                <Button fx:id="deleteAccountButton" text="  Delete Account"
+                        onAction="#handleDeleteAccount"
+                        prefWidth="220"
+                        style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-font-size: 13px;"/>
+
+                <Label text="OTHER USERS"
+                       style="-fx-text-fill: #6c757d; -fx-font-size: 11px; -fx-padding: 10 20 5 20;"/>
+
+                <Button fx:id="allProfilesButton" text="  View All Profiles"
+                        onAction="#handleViewOtherProfiles"
+                        prefWidth="220"
+                        style="-fx-background-color: #495057; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-font-size: 13px;"/>
+
+                <Button fx:id="backButton" text="  Go Back to Groups"
+                        onAction="#handleBackToGroups"
+                        prefWidth="220"
+                        style="-fx-background-color: #495057; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-font-size: 13px;"/>
+
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- User Info & Logout -->
+            <VBox style="-fx-padding: 20; -fx-border-color: #495057; -fx-border-width: 1 0 0 0;">
+                <Label fx:id="welcomeLabel" text="Welcome, User"
+                       style="-fx-text-fill: white; -fx-font-size: 12px;"/>
+                <Button text=" Logout"
+                        onAction="#handleLogout"
+                        prefWidth="180"
+                        style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-alignment: CENTER; -fx-padding: 8 15; -fx-font-size: 12px;">
+                    <VBox.margin>
+                        <Insets top="10"/>
+                    </VBox.margin>
+                </Button>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- Main Content Area (loaded dynamically) -->
+    <center>
+        <VBox alignment="CENTER" style="-fx-background-color: #f8f9fa;">
+            <Label text="Loading..." style="-fx-text-fill: #6c757d;"/>
+        </VBox>
+    </center>
+
+</BorderPane>

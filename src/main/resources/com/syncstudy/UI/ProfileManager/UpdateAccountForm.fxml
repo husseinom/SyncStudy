@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.syncstudy.UI.ProfileManager.UpdateAccountController"
+      spacing="15" style="-fx-background-color: #f8f9fa;">
+
+    <padding>
+        <Insets top="20" right="30" bottom="20" left="30"/>
+    </padding>
+
+    <!-- Header -->
+    <Label text="Update Account Information" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <Separator/>
+
+    <!-- Form -->
+    <GridPane hgap="15" vgap="12">
+        <columnConstraints>
+            <ColumnConstraints minWidth="120" prefWidth="120"/>
+            <ColumnConstraints minWidth="300" prefWidth="300"/>
+        </columnConstraints>
+
+        <!-- Username -->
+        <Label text="Username:" GridPane.rowIndex="0" GridPane.columnIndex="0">
+            <font><Font name="System Bold" size="12.0"/></font>
+        </Label>
+        <TextField fx:id="usernameField" promptText="Username"
+                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <!-- Email -->
+        <Label text="Email:" GridPane.rowIndex="1" GridPane.columnIndex="0">
+            <font><Font name="System Bold" size="12.0"/></font>
+        </Label>
+        <TextField fx:id="emailField" promptText="Email"
+                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <!-- First Name -->
+        <Label text="First Name:" GridPane.rowIndex="2" GridPane.columnIndex="0">
+            <font><Font name="System Bold" size="12.0"/></font>
+        </Label>
+        <TextField fx:id="firstnameField" promptText="First Name"
+                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <!-- Last Name -->
+        <Label text="Last Name:" GridPane.rowIndex="3" GridPane.columnIndex="0">
+            <font><Font name="System Bold" size="12.0"/></font>
+        </Label>
+        <TextField fx:id="lastnameField" promptText="Last Name"
+                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <!-- University -->
+        <Label text="University:" GridPane.rowIndex="4" GridPane.columnIndex="0">
+            <font><Font name="System Bold" size="12.0"/></font>
+        </Label>
+        <TextField fx:id="universityField" promptText="University"
+                   GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <!-- Department -->
+        <Label text="Department:" GridPane.rowIndex="5" GridPane.columnIndex="0">
+            <font><Font name="System Bold" size="12.0"/></font>
+        </Label>
+        <TextField fx:id="departmentField" promptText="Department"
+                   GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+        <!-- New Password (Optional) -->
+        <Label text="New Password:" GridPane.rowIndex="6" GridPane.columnIndex="0">
+            <font><Font name="System Bold" size="12.0"/></font>
+        </Label>
+        <PasswordField fx:id="passwordField" promptText="Leave blank to keep current"
+                       GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+        <!-- Confirm Password -->
+        <Label text="Confirm Password:" GridPane.rowIndex="7" GridPane.columnIndex="0">
+            <font><Font name="System Bold" size="12.0"/></font>
+        </Label>
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirm new password"
+                       GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <!-- Message Label -->
+    <Label fx:id="messageLabel" wrapText="true" style="-fx-text-fill: #dc3545;"/>
+
+    <!-- Buttons -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Update Account" onAction="#handleUpdate"
+                style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-padding: 8 20;"/>
+        <Button text="Cancel" onAction="#handleCancel"
+                style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-padding: 8 20;"/>
+    </HBox>
+
+</VBox>

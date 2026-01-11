@@ -64,6 +64,7 @@
             <Button onAction="#onRefresh" text="Refresh" />
             <Button onAction="#onOpenChat" text="Open Chat" />
             <Button onAction="#onClick" text="Group Details" />
+            <Button onAction="#onGoToProfile" text="Go to Your Profile" />
          </children>
          <padding>
             <Insets bottom="15.0" left="15.0" right="15.0" top="10.0" />

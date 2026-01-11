@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.syncstudy.UI.SessionManager.LoginController"
+      fx:controller="com.syncstudy.UI.ProfileManager.RegisterController"
       alignment="CENTER" spacing="12">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
@@ -25,15 +25,26 @@
 
         <Label text="Password:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <PasswordField fx:id="passwordField" promptText="Password" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Email:" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+        <TextField fx:id="emailField" promptText="Email" GridPane.rowIndex="0" GridPane.columnIndex="4" />
+
+        <Label text="Firstname:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="firstnameField" promptText="Firstname" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+        <Label text="Lastname:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="lastnameField" promptText="Lastname" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+
+        <Label text="University:" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+        <TextField fx:id="universityField" promptText="University" GridPane.rowIndex="1" GridPane.columnIndex="4" />
+
+        <Label text="Department:" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+        <TextField fx:id="departmentField" promptText="Department" GridPane.rowIndex="2" GridPane.columnIndex="4" />
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="Login" onAction="#onLogin" defaultButton="true"/>
-    </HBox>
-
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="No account ? Register here:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <Button text="Sign up" onAction="#navigateToRegister" defaultButton="true"/>
+        <Button text="Create Account" onAction="#handleCreateAccount" defaultButton="true"/>
+        <Button text="Back to Login" onAction="#navigateBackToLogin"/>
     </HBox>
 
     <Label fx:id="messageLabel" wrapText="true" style="-fx-text-fill: #b00020;"/>

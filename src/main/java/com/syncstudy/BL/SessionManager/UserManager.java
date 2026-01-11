@@ -2,6 +2,8 @@ package com.syncstudy.BL.SessionManager;
 import com.syncstudy.BL.AbstractFactory;
 import com.syncstudy.PL.PostgresFactory;
 
+import java.sql.SQLException;
+
 /**
  * Singleton UserManager handling user-related business logic
  */
@@ -91,9 +93,10 @@ public class UserManager {
     /**
      * Logout the current user
      */
-    public void logout() {
+    public boolean logout() {
         this.currentUser = null;
         System.out.println("User logged out successfully.");
+        return true;
     }
 
     /**
@@ -104,4 +107,63 @@ public class UserManager {
     public User findUserByUsername(String username) {
         return userDAO.findUserByUsername(username);
     }
+
+    /**
+     * Create a user with given data
+     * @param username the username of the user we want to create
+     * @param passwordHash a password hash for the new user
+     * @param email the new user's email
+     * @param fullName the new user's full name
+     * @param university the new user's university
+     * @param department the new user's department
+     * @return true if user creation is successful, false otherwise
+     */
+    public Long createUser(String username, String passwordHash, String email, String fullName, String university, String department) {
+        if (username == null || username.trim().isEmpty() ||
+                passwordHash == null || passwordHash.trim().isEmpty() ||
+                email == null || email.trim().isEmpty() ||
+                fullName == null || fullName.trim().isEmpty() ||
+                university == null || university.trim().isEmpty() ||
+                department == null || department.trim().isEmpty()) {
+            return null;
+        }
+        return userDAO.createUser(username,passwordHash,email,fullName,university,department);
+    }
+
+    /**
+     * Delete a user by id
+     * @param userId the id to delete the user from
+     * @return true if deletion successful, false otherwise
+     */
+    public boolean deleteUser(Long userId) {
+        if (userId == null) {
+            return false;
+        }
+        return userDAO.deleteUser(userId);
+    }
+
+    /**
+     * Find a user by id
+     * @param userId the id to search for
+     * @return User object if found, null otherwise
+     */
+    public User findUserById(Long userId) {
+        return userDAO.findUserById(userId);
+    }
+
+    /**
+     * Update a user with the given credentials
+     * @param userId the id of the user to update
+     * @param username the new username
+     * @param passwordHash the new password hash
+     * @param email the new email
+     * @param fullname the new name
+     * @param university the new university
+     * @param department the new department
+     * @return true if update successful, false otherwise
+     */
+    public boolean updateUser(Long userId, String username, String passwordHash, String email, String fullname, String university, String department) {
+        return userDAO.updateUser(userId, username,passwordHash,email,fullname,university,department);
+    }
+
 }

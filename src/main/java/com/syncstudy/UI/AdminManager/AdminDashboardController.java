@@ -23,6 +23,7 @@ public class AdminDashboardController {
     @FXML private VBox sidebar;
     @FXML private Button usersButton;
     @FXML private Button membershipButton;
+    @FXML private Button categoriesButton;
     @FXML private Label welcomeLabel;
 
     private AdminFacade adminFacade;
@@ -61,6 +62,7 @@ public class AdminDashboardController {
             Parent userManagement = loader.load();
             mainPane.setCenter(userManagement);
 
+            // Update button states
             updateButtonStyles(usersButton);
         } catch (IOException e) {
             showError("Failed to load User Management: " + e.getMessage());
@@ -77,6 +79,24 @@ public class AdminDashboardController {
             updateButtonStyles(membershipButton);
         } catch (IOException e) {
             showError("Failed to load Group List: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Handle Manage Categories navigation
+     */
+    @FXML
+    public void handleManageCategories() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/syncstudy/UI/GroupManager/CategoryManagement.fxml"));
+            Parent categoryManagement = loader.load();
+            mainPane.setCenter(categoryManagement);
+
+            // Update button states
+            updateButtonStyles(categoriesButton);
+        } catch (IOException e) {
+            showError("Failed to load Category Management: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -105,13 +125,18 @@ public class AdminDashboardController {
         String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20;";
         String activeStyle = "-fx-background-color: #495057; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20;";
 
+        // Reset all buttons
         if (usersButton != null) {
             usersButton.setStyle(defaultStyle);
         }
         if (membershipButton != null) {
             membershipButton.setStyle(defaultStyle);
         }
+        if (categoriesButton != null) {
+            categoriesButton.setStyle(defaultStyle);
+        }
 
+        // Set active button
         if (activeButton != null) {
             activeButton.setStyle(activeStyle);
         }

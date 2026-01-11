@@ -1,0 +1,223 @@
+/* SyncStudy Admin Module Styles */
+
+/* General */
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    -fx-background-color: #343a40;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 20;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #495057;
+}
+
+.sidebar-button.active {
+    -fx-background-color: #495057;
+}
+
+/* Table */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 4;
+}
+
+.table-view .column-header {
+    -fx-background-color: #f8f9fa;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #e3f2fd;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Status Badges */
+.badge {
+    -fx-padding: 2 8;
+    -fx-background-radius: 4;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.badge-active {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+}
+
+.badge-blocked {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+}
+
+/* Buttons */
+.btn-primary {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #0056b3;
+}
+
+.btn-success {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.btn-success:hover {
+    -fx-background-color: #1e7e34;
+}
+
+.btn-warning {
+    -fx-background-color: #ffc107;
+    -fx-text-fill: black;
+    -fx-cursor: hand;
+}
+
+.btn-warning:hover {
+    -fx-background-color: #d39e00;
+}
+
+.btn-danger {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #bd2130;
+}
+
+.btn-info {
+    -fx-background-color: #17a2b8;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.btn-info:hover {
+    -fx-background-color: #117a8b;
+}
+
+.btn-secondary {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #545b62;
+}
+
+/* Form Controls */
+.text-field {
+    -fx-padding: 8 12;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.text-field:focused {
+    -fx-border-color: #80bdff;
+    -fx-effect: dropshadow(gaussian, rgba(0,123,255,0.25), 4, 0, 0, 0);
+}
+
+.combo-box {
+    -fx-padding: 6 12;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+/* Cards */
+.card {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+/* Dialogs */
+.dialog-pane {
+    -fx-background-color: white;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #f8f9fa;
+}
+
+/* Tabs */
+.tab-pane .tab-header-area {
+    -fx-background-color: #f8f9fa;
+}
+
+.tab-pane .tab {
+    -fx-background-color: transparent;
+    -fx-padding: 8 16;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6 #dee2e6 white #dee2e6;
+}
+
+/* Pagination */
+.pagination .page-information {
+    -fx-text-fill: #6c757d;
+}
+
+/* Alert/Warning styles */
+.warning-text {
+    -fx-text-fill: #dc3545;
+    -fx-font-weight: bold;
+}
+
+.info-text {
+    -fx-text-fill: #6c757d;
+}
+
+/* Empty state */
+.empty-state {
+    -fx-alignment: center;
+    -fx-padding: 40;
+}
+
+.empty-state-icon {
+    -fx-font-size: 48px;
+    -fx-text-fill: #adb5bd;
+}
+
+.empty-state-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #6c757d;
+}
+
+.empty-state-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #adb5bd;
+}
+
+/* Header styles for OwnProfile */
+.user-info-header {
+    -fx-background-color: #28a745;
+}

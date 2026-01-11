@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/21"
+            fx:controller="com.syncstudy.UI.ProfileManager.OtherProfilesController"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color: #f8f9fa;">
+
+    <!-- Header -->
+    <top>
+        <VBox style="-fx-background-color: #343a40; -fx-padding: 15;">
+            <Label text="Other profiles"
+                   style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label text="See other users' profiles"
+                   style="-fx-text-fill: #adb5bd; -fx-font-size: 12px;"/>
+        </VBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+
+            <!-- Filters Row -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField"
+                           promptText="Search users by name or email..."
+                           prefWidth="250"
+                           style="-fx-font-size: 13px;"/>
+
+                <Label text="Sort by:"/>
+                <ComboBox fx:id="sortByCombo" prefWidth="150"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="Clear Filters" onAction="#handleClearFilters"
+                        style="-fx-background-color: #6c757d; -fx-text-fill: white;"/>
+            </HBox>
+
+            <!-- Users Table -->
+            <TableView fx:id="profilesTable" VBox.vgrow="ALWAYS"
+                       style="-fx-background-color: white; -fx-border-color: #dee2e6; -fx-border-radius: 4;">
+                <columns>
+                    <TableColumn fx:id="nameColumn" text="Name" prefWidth="150"/>
+                    <TableColumn fx:id="emailColumn" text="Email" prefWidth="250"/>
+                    <TableColumn fx:id="universityColumn" text="University / Dept" prefWidth="250"/>
+                </columns>
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="10">
+                        <Label text="No profiles found" style="-fx-font-size: 16px; -fx-text-fill: #6c757d;"/>
+                        <Label text="Try adjusting your search or filters" style="-fx-font-size: 12px; -fx-text-fill: #adb5bd;"/>
+                    </VBox>
+                </placeholder>
+            </TableView>
+
+            <!-- Footer with pagination -->
+            <HBox spacing="15" alignment="CENTER">
+                <Label fx:id="totalUsersLabel" text="Showing 0 users"
+                       style="-fx-text-fill: #6c757d;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Pagination fx:id="pagination" maxPageIndicatorCount="5"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
+

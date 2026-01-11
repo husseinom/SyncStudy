@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="com.syncstudy.UI.GroupManager.CategoryManagementController"
+      spacing="20" style="-fx-background-color: #f8f9fa; -fx-padding: 30;">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <VBox>
+            <Label text="Category Management"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #212529;"/>
+            <Label text="Create, edit, and manage group categories"
+                   style="-fx-text-fill: #6c757d; -fx-font-size: 13px;"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="+ Create New Category"
+                onAction="#handleCreateCategory"
+                style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 20; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- Search and Filter Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="15"
+          style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8;">
+
+        <Label text="🔍" style="-fx-font-size: 16px;"/>
+        <TextField fx:id="searchField"
+                   promptText="Search categories..."
+                   prefWidth="300"
+                   style="-fx-padding: 8; -fx-font-size: 13px;"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button text="↻ Refresh"
+                onAction="#handleRefresh"
+                style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-padding: 8 15;"/>
+
+        <Label fx:id="totalLabel" text="Total: 0 categories"
+               style="-fx-text-fill: #6c757d; -fx-font-size: 13px;"/>
+    </HBox>
+
+    <!-- Categories Table -->
+    <VBox VBox.vgrow="ALWAYS"
+          style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 0;">
+
+        <TableView fx:id="categoriesTable" VBox.vgrow="ALWAYS"
+                   style="-fx-background-color: transparent;">
+
+            <columns>
+                <TableColumn fx:id="iconColumn" text="Icon" prefWidth="50"/>
+                <TableColumn fx:id="nameColumn" text="Category Name" prefWidth="150"/>
+                <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="200"/>
+                <TableColumn fx:id="adminColumn" text="Administrator" prefWidth="150"/>
+                <TableColumn fx:id="groupsCountColumn" text="Groups" prefWidth="80"/>
+                <TableColumn fx:id="createdColumn" text="Created" prefWidth="130"/>
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="230"/>
+            </columns>
+
+            <placeholder>
+                <VBox alignment="CENTER" spacing="10">
+                    <Label text="📂" style="-fx-font-size: 48px;"/>
+                    <Label text="No categories found" style="-fx-font-size: 16px; -fx-text-fill: #6c757d;"/>
+                    <Label text="Click 'Create New Category' to add one" style="-fx-text-fill: #adb5bd;"/>
+                </VBox>
+            </placeholder>
+
+        </TableView>
+    </VBox>
+
+
+
+</VBox>
+
