@@ -22,9 +22,9 @@ public class AdminDashboardController {
     @FXML private BorderPane mainPane;
     @FXML private VBox sidebar;
     @FXML private Button usersButton;
+    @FXML private Button membershipButton;
     @FXML private Button categoriesButton;
     @FXML private Button reportsButton;
-    @FXML private Button membershipButton;
     @FXML private Label welcomeLabel;
 
     private AdminFacade adminFacade;
@@ -147,6 +147,9 @@ public class AdminDashboardController {
         // Reset all buttons
         if (usersButton != null) {
             usersButton.setStyle(defaultStyle);
+        }
+        if (membershipButton != null) {
+            membershipButton.setStyle(defaultStyle);
         }
         if (categoriesButton != null) {
             categoriesButton.setStyle(defaultStyle);

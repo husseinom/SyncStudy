@@ -35,8 +35,8 @@
                         prefWidth="220"
                         style="-fx-background-color: #495057; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-font-size: 13px;"/>
 
-                <Button fx:id="categoriesButton" text="📁 Manage Categories"
-                        onAction="#handleManageCategories"
+                <Button fx:id="membershipButton" text="  Manage Membership"
+                        onAction="#handleManageMembership"
                         prefWidth="220"
                         style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-font-size: 13px;"/>
 

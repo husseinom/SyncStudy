@@ -1,16 +1,13 @@
 package com.syncstudy.BL;
 
-import com.syncstudy.BL.FileManager.SharedFileDAO;
-import com.syncstudy.BL.ProfileManager.ProfileDAO;
 import com.syncstudy.BL.SessionManager.UserDAO;
 import com.syncstudy.BL.AdminManager.AdminDAO;
 import com.syncstudy.BL.GroupManager.GroupDAO;
 import com.syncstudy.BL.GroupManager.CategoryDAO;
 import com.syncstudy.BL.GroupMembership.GroupMembershipDAO;
-import com.syncstudy.BL.GroupManager.CategoryDAO;
-import com.syncstudy.BL.ReportsManager.ReportsDAO;
 import com.syncstudy.BL.ProfileManager.ProfileDAO;
 import com.syncstudy.BL.FileManager.SharedFileDAO;
+import com.syncstudy.BL.ReportsManager.ReportsDAO;
 
 /**
  * Abstract Factory for creating DAO instances
@@ -45,6 +42,7 @@ public abstract class AbstractFactory {
      * @return ReportsDAO implementation
      */
     public abstract ReportsDAO createReportsDAO();
+
 
     /**
      * Creates a GroupMembershipDAO instance
