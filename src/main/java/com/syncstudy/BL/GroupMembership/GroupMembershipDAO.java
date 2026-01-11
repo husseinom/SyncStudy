@@ -27,12 +27,11 @@ public abstract class GroupMembershipDAO {
     public abstract List<JoinRequest> getPendingJoinRequests(Long groupId);
     
     /**
-     * Get join request by user and group
-     * @param userId User ID
-     * @param groupId Group ID
+     * Get join request by ID
+     * @param requestId Request ID
      * @return JoinRequest if exists, null otherwise
      */
-    public abstract JoinRequest getJoinRequestByUserAndGroup(Long userId, Long groupId);
+    public abstract JoinRequest getJoinRequestById(Long requestId);
     
     /**
      * Update join request status
@@ -41,13 +40,6 @@ public abstract class GroupMembershipDAO {
      * @param rejectionReason Reason for rejection (if applicable)
      */
     public abstract void updateJoinRequestStatus(Long requestId, String status, String rejectionReason);
-    
-    /**
-     * Get all join requests for a user
-     * @param userId User ID
-     * @return List of join requests
-     */
-    public abstract List<JoinRequest> getUserJoinRequests(Long userId);
     
     // ====================================================
     // GROUP MEMBERS MANAGEMENT
@@ -162,11 +154,4 @@ public abstract class GroupMembershipDAO {
      * @return Number of active members
      */
     public abstract int getMemberCount(Long groupId);
-    
-    /**
-     * Get groups where user is member
-     * @param userId User ID
-     * @return List of group IDs where user is member
-     */
-    public abstract List<Long> getUserGroups(Long userId);
 }

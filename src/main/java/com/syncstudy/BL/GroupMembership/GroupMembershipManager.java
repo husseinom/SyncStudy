@@ -84,18 +84,27 @@ public class GroupMembershipManager {
             throw new SecurityException("You do not have permission to perform this action. Group admin access required.");
         }
         
-        // Get the request to find user
-        JoinRequest request = membershipDAO.getJoinRequestByUserAndGroup(null, groupId);
-        if (request != null && request.getRequestId().equals(requestId)) {
-            // Add user to group as member
-            GroupMember member = new GroupMember(request.getUserId(), groupId);
-            membershipDAO.addGroupMember(member);
-            
-            // Update request status
-            membershipDAO.updateJoinRequestStatus(requestId, "Approved", null);
-            
-            // Note: Group member count will be updated automatically by database triggers or in PL layer
+        // Get the request by ID
+        JoinRequest request = membershipDAO.getJoinRequestById(requestId);
+        if (request == null) {
+            throw new IllegalStateException("Join request not found with ID: " + requestId);
         }
+        
+        // Verify the request is for the correct group and is pending
+        if (!request.getGroupId().equals(groupId)) {
+            throw new IllegalStateException("Request does not belong to this group.");
+        }
+        
+        if (!"Pending".equals(request.getStatus())) {
+            throw new IllegalStateException("Request has already been processed.");
+        }
+        
+        // Add user to group as member
+        GroupMember member = new GroupMember(request.getUserId(), groupId);
+        membershipDAO.addGroupMember(member);
+        
+        // Update request status
+        membershipDAO.updateJoinRequestStatus(requestId, "Approved", null);
     }
     
     // ====================================================
@@ -167,8 +176,10 @@ public class GroupMembershipManager {
             throw new SecurityException("You cannot ban an administrator. Please remove their admin role first.");
         }
         
+        // Ban the member - this sets is_banned = TRUE, keeping the record in the table
+        // so we can see them in banned members list and unban later
         membershipDAO.banMember(targetUserId, groupId, reason);
-        membershipDAO.removeGroupMember(targetUserId, groupId);
+        // Note: Do NOT remove the member, just mark as banned
     }
     
     /**
@@ -263,18 +274,6 @@ public class GroupMembershipManager {
     }
     
     /**
-     * Check if user can join group
-     * @param userId User ID
-     * @param groupId Group ID
-     * @return true if user can join, false otherwise
-     */
-    public boolean canUserJoinGroup(Long userId, Long groupId) {
-        return !membershipDAO.isUserMember(userId, groupId) 
-            && !membershipDAO.isUserBanned(userId, groupId)
-            && !membershipDAO.hasPendingRequest(userId, groupId);
-    }
-    
-    /**
      * Get user's group membership status
      * @param userId User ID
      * @param groupId Group ID
@@ -290,5 +289,14 @@ public class GroupMembershipManager {
         } else {
             return "Not Member";
         }
+    }
+    
+    /**
+     * Get the actual member count for a group (excluding banned members)
+     * @param groupId Group ID
+     * @return Number of active members
+     */
+    public int getMemberCount(Long groupId) {
+        return membershipDAO.getMemberCount(groupId);
     }
 }
