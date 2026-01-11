@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/21"
+            fx:controller="com.syncstudy.UI.ReportsManager.ReportsListController"
+            prefWidth="900" prefHeight="600"
+            stylesheets="@reports-styles.css"
+            style="-fx-background-color: #f8f9fa;">
+
+    <!-- Header -->
+    <top>
+        <VBox style="-fx-background-color: #343a40; -fx-padding: 15;">
+            <Label text="Reports Management"
+                   style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label text="View and manage user reports (signalements)"
+                   style="-fx-text-fill: #adb5bd; -fx-font-size: 12px;"/>
+        </VBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+
+            <!-- Filters Row -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField"
+                           promptText="Search by user or description..."
+                           prefWidth="250"
+                           style="-fx-font-size: 13px;"/>
+
+                <Label text="Status:"/>
+                <ComboBox fx:id="statusFilter" prefWidth="130"/>
+
+                <Label text="Problem Type:"/>
+                <ComboBox fx:id="problemTypeFilter" prefWidth="150"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="Refresh" onAction="#handleRefresh"
+                        style="-fx-background-color: #17a2b8; -fx-text-fill: white;"/>
+                        
+                <Button text="Clear Filters" onAction="#handleClearFilters"
+                        style="-fx-background-color: #6c757d; -fx-text-fill: white;"/>
+            </HBox>
+
+            <!-- Stats Row -->
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <VBox styleClass="stat-card" style="-fx-background-color: #fff3cd; -fx-padding: 10; -fx-background-radius: 5;">
+                    <Label fx:id="pendingCountLabel" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                    <Label text="Pending" style="-fx-font-size: 12px; -fx-text-fill: #856404;"/>
+                </VBox>
+                <VBox styleClass="stat-card" style="-fx-background-color: #d4edda; -fx-padding: 10; -fx-background-radius: 5;">
+                    <Label fx:id="validatedCountLabel" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                    <Label text="Validated" style="-fx-font-size: 12px; -fx-text-fill: #155724;"/>
+                </VBox>
+                <VBox styleClass="stat-card" style="-fx-background-color: #f8d7da; -fx-padding: 10; -fx-background-radius: 5;">
+                    <Label fx:id="rejectedCountLabel" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                    <Label text="Rejected" style="-fx-font-size: 12px; -fx-text-fill: #721c24;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Reports Table -->
+            <TableView fx:id="reportsTable" VBox.vgrow="ALWAYS"
+                       style="-fx-background-color: white; -fx-border-color: #dee2e6; -fx-border-radius: 4;">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="dateColumn" text="Date" prefWidth="130"/>
+                    <TableColumn fx:id="reporterColumn" text="Reporter" prefWidth="120"/>
+                    <TableColumn fx:id="reportedUserColumn" text="Reported User" prefWidth="120"/>
+                    <TableColumn fx:id="problemTypeColumn" text="Problem Type" prefWidth="120"/>
+                    <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="180"/>
+                    <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150" sortable="false"/>
+                </columns>
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="10">
+                        <Label text="No reports found" style="-fx-font-size: 16px; -fx-text-fill: #6c757d;"/>
+                        <Label text="No user reports to display" style="-fx-font-size: 12px; -fx-text-fill: #adb5bd;"/>
+                    </VBox>
+                </placeholder>
+            </TableView>
+
+            <!-- Footer with pagination -->
+            <HBox spacing="15" alignment="CENTER">
+                <Label fx:id="totalReportsLabel" text="Showing 0 reports"
+                       style="-fx-text-fill: #6c757d;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Pagination fx:id="pagination" maxPageIndicatorCount="5"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

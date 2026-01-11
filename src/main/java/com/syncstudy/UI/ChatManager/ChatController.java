@@ -4,6 +4,7 @@ import com.syncstudy.BL.ChatManager.ChatFacade;
 import com.syncstudy.BL.ChatManager.Message;
 import com.syncstudy.BL.FileManager.FileFacade;
 import com.syncstudy.BL.FileManager.SharedFile;
+import com.syncstudy.BL.ReportsManager.ReportsFacade;
 import com.syncstudy.UI.FileManager.FileDetailsController;
 import com.syncstudy.UI.FileManager.FileListController;
 import javafx.application.Platform;
@@ -322,6 +323,15 @@ public class ChatController {
 
         buttonBox.getChildren().addAll(viewButton, downloadButton);
 
+        // Add Report button for other users' files
+        if (!isOwnFile) {
+            Button reportBtn = new Button("Report");
+            reportBtn.setStyle("-fx-font-size: 10; -fx-background-color: #ffcccc; -fx-text-fill: #cc0000; -fx-padding: 2 8; -fx-background-radius: 3;");
+            reportBtn.setTooltip(new Tooltip("Report this file"));
+            reportBtn.setOnAction(e -> handleReportFile(file));
+            buttonBox.getChildren().add(reportBtn);
+        }
+
         bubble.getChildren().addAll(fileInfo, buttonBox);
 
         // Context menu (right-click)
@@ -357,6 +367,13 @@ public class ChatController {
             MenuItem deleteItem = new MenuItem("Delete");
             deleteItem.setOnAction(e -> handleDeleteFile(file));
             contextMenu.getItems().add(deleteItem);
+        }
+
+        // Report option (only for other users' files)
+        if (!isOwner) {
+            MenuItem reportItem = new MenuItem("🚨 Report");
+            reportItem.setOnAction(e -> handleReportFile(file));
+            contextMenu.getItems().add(reportItem);
         }
 
         return contextMenu;
@@ -443,6 +460,15 @@ public class ChatController {
             timestampBox.getChildren().add(editedLabel);
         }
 
+        // Add Report button for other users' messages
+        if (!isOwnMessage) {
+            Button reportBtn = new Button("Report");
+            reportBtn.setStyle("-fx-font-size: 10; -fx-background-color: #ffcccc; -fx-text-fill: #cc0000; -fx-cursor: hand; -fx-padding: 2 8; -fx-background-radius: 3;");
+            reportBtn.setTooltip(new Tooltip("Report this message"));
+            reportBtn.setOnAction(e -> handleReportMessage(message));
+            timestampBox.getChildren().add(reportBtn);
+        }
+
         bubbleContainer.getChildren().add(timestampBox);
 
         ContextMenu contextMenu = createContextMenu(message);
@@ -472,6 +498,13 @@ public class ChatController {
             MenuItem deleteItem = new MenuItem("Delete");
             deleteItem.setOnAction(e -> handleDeleteMessage(message));
             contextMenu.getItems().add(deleteItem);
+        }
+
+        // Report option (only for other users' messages)
+        if (!isOwner) {
+            MenuItem reportItem = new MenuItem("🚨 Report");
+            reportItem.setOnAction(e -> handleReportMessage(message));
+            contextMenu.getItems().add(reportItem);
         }
 
         return contextMenu;
@@ -654,5 +687,87 @@ public class ChatController {
                 loadMessages();
                 break;
         }
+    }
+
+    /**
+     * Handle report message - opens dialog to report a message
+     */
+    private void handleReportMessage(Message message) {
+        showReportDialog(
+            message.getSenderId(),
+            "Message: " + (message.getContent().length() > 100 
+                ? message.getContent().substring(0, 100) + "..." 
+                : message.getContent())
+        );
+    }
+
+    /**
+     * Handle report file - opens dialog to report a file
+     */
+    private void handleReportFile(SharedFile file) {
+        showReportDialog(
+            file.getUploaderId(),
+            "File: " + file.getOriginalFileName()
+        );
+    }
+
+    /**
+     * Show report dialog
+     */
+    private void showReportDialog(Long reportedUserId, String reportedContent) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Report Content");
+        dialog.setHeaderText("Report this content");
+
+        // Problem type choice
+        ChoiceBox<String> problemTypeChoice = new ChoiceBox<>();
+        problemTypeChoice.getItems().addAll("Spam", "Harassment", "Inappropriate Content", "Other");
+        problemTypeChoice.setValue("Spam");
+
+        // Description
+        TextArea descriptionArea = new TextArea();
+        descriptionArea.setPromptText("Describe the problem...");
+        descriptionArea.setPrefRowCount(3);
+        descriptionArea.setWrapText(true);
+
+        // Layout
+        VBox content = new VBox(10);
+        content.getChildren().addAll(
+            new Label("Problem Type:"),
+            problemTypeChoice,
+            new Label("Description:"),
+            descriptionArea,
+            new Label("Content being reported:"),
+            new Label(reportedContent)
+        );
+        content.setStyle("-fx-padding: 10;");
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                String problemType = problemTypeChoice.getValue();
+                String description = descriptionArea.getText();
+
+                if (description == null || description.trim().isEmpty()) {
+                    showError("Please provide a description");
+                    return;
+                }
+
+                try {
+                    ReportsFacade.getInstance().createReport(
+                        reportedUserId,
+                        currentUserId,
+                        problemType,
+                        description,
+                        reportedContent
+                    );
+                    showSuccess("Report submitted successfully. An admin will review it.");
+                } catch (Exception e) {
+                    showError("Error submitting report: " + e.getMessage());
+                }
+            }
+        });
     }
 }

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="com.syncstudy.UI.ReportsManager.ReportDetailsController"
+      prefWidth="600" prefHeight="500"
+      spacing="20"
+      stylesheets="@reports-styles.css"
+      style="-fx-background-color: #f8f9fa; -fx-padding: 20;">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label fx:id="titleLabel" text="Report Details"
+               style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="statusBadge" text="Pending"
+               style="-fx-background-color: #ffc107; -fx-text-fill: black; -fx-padding: 5 15; -fx-background-radius: 15; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <!-- Report Info Card -->
+    <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+        
+        <GridPane hgap="15" vgap="12">
+            <columnConstraints>
+                <ColumnConstraints minWidth="120" halignment="RIGHT"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            
+            <Label text="Report ID:" style="-fx-font-weight: bold; -fx-text-fill: #6c757d;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <Label fx:id="reportIdLabel" text="-" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            
+            <Label text="Date:" style="-fx-font-weight: bold; -fx-text-fill: #6c757d;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <Label fx:id="dateLabel" text="-" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            
+            <Label text="Reporter:" style="-fx-font-weight: bold; -fx-text-fill: #6c757d;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <Label fx:id="reporterLabel" text="-" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            
+            <Label text="Reported User:" style="-fx-font-weight: bold; -fx-text-fill: #6c757d;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <Label fx:id="reportedUserLabel" text="-" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            
+            <Label text="Problem Type:" style="-fx-font-weight: bold; -fx-text-fill: #6c757d;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <Label fx:id="problemTypeLabel" text="-" style="-fx-text-fill: #dc3545; -fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        </GridPane>
+        
+        <Separator/>
+        
+        <!-- Description -->
+        <VBox spacing="8">
+            <Label text="Description:" style="-fx-font-weight: bold; -fx-text-fill: #6c757d;"/>
+            <TextArea fx:id="descriptionArea" editable="false" wrapText="true" prefHeight="80"
+                      style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6;"/>
+        </VBox>
+        
+        <!-- Reported Content -->
+        <VBox spacing="8">
+            <Label text="Reported Content:" style="-fx-font-weight: bold; -fx-text-fill: #6c757d;"/>
+            <TextArea fx:id="reportedContentArea" editable="false" wrapText="true" prefHeight="80"
+                      style="-fx-background-color: #fff3cd; -fx-border-color: #ffc107;"/>
+        </VBox>
+        
+        <!-- Admin Action Info (if processed) -->
+        <VBox fx:id="adminActionBox" spacing="8" visible="false" managed="false">
+            <Separator/>
+            <Label text="Admin Action:" style="-fx-font-weight: bold; -fx-text-fill: #6c757d;"/>
+            <HBox spacing="15">
+                <Label text="Processed by:" style="-fx-text-fill: #6c757d;"/>
+                <Label fx:id="adminLabel" text="-"/>
+                <Label text="Action Date:" style="-fx-text-fill: #6c757d;"/>
+                <Label fx:id="actionDateLabel" text="-"/>
+            </HBox>
+        </VBox>
+        
+    </VBox>
+
+    <!-- Action Buttons -->
+    <HBox fx:id="actionButtonsBox" spacing="15" alignment="CENTER">
+        <Button fx:id="validateBtn" text="✓ Validate Report" onAction="#handleValidate"
+                style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand;"/>
+        <Button fx:id="rejectBtn" text="✗ Reject Report" onAction="#handleReject"
+                style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 25; -fx-cursor: hand;"/>
+    </HBox>
+    
+    <!-- Close Button -->
+    <HBox alignment="CENTER">
+        <Button text="Close" onAction="#handleClose"
+                style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-padding: 8 30;"/>
+    </HBox>
+
+</VBox>

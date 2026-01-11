@@ -23,6 +23,7 @@ public class AdminDashboardController {
     @FXML private VBox sidebar;
     @FXML private Button usersButton;
     @FXML private Button categoriesButton;
+    @FXML private Button reportsButton;
     @FXML private Label welcomeLabel;
 
     private AdminFacade adminFacade;
@@ -88,6 +89,24 @@ public class AdminDashboardController {
     }
 
     /**
+     * Handle Manage Reports navigation
+     */
+    @FXML
+    public void handleManageReports() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/syncstudy/UI/ReportsManager/ReportsList.fxml"));
+            Parent reportsManagement = loader.load();
+            mainPane.setCenter(reportsManagement);
+
+            // Update button states
+            updateButtonStyles(reportsButton);
+        } catch (IOException e) {
+            showError("Failed to load Reports Management: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Handle logout action
      */
     @FXML
@@ -117,6 +136,9 @@ public class AdminDashboardController {
         }
         if (categoriesButton != null) {
             categoriesButton.setStyle(defaultStyle);
+        }
+        if (reportsButton != null) {
+            reportsButton.setStyle(defaultStyle);
         }
 
         // Set active button

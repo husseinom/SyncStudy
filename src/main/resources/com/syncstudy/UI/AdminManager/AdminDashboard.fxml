@@ -39,6 +39,11 @@
                         onAction="#handleManageCategories"
                         prefWidth="220"
                         style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-font-size: 13px;"/>
+
+                <Button fx:id="reportsButton" text="🚨 Manage Reports"
+                        onAction="#handleManageReports"
+                        prefWidth="220"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER_LEFT; -fx-padding: 10 20; -fx-font-size: 13px;"/>
             </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
