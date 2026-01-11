@@ -5,6 +5,8 @@ import com.syncstudy.BL.AdminManager.AdminDAO;
 import com.syncstudy.BL.GroupManager.GroupDAO;
 import com.syncstudy.BL.GroupManager.CategoryDAO;
 import com.syncstudy.BL.GroupMembership.GroupMembershipDAO;
+import com.syncstudy.BL.ProfileManager.ProfileDAO;
+import com.syncstudy.BL.FileManager.SharedFileDAO;
 
 /**
  * Abstract Factory for creating DAO instances
