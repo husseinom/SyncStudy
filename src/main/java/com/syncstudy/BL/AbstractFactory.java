@@ -1,5 +1,6 @@
 package com.syncstudy.BL;
 
+import com.syncstudy.BL.FileManager.SharedFileDAO;
 import com.syncstudy.BL.ProfileManager.ProfileDAO;
 import com.syncstudy.BL.SessionManager.UserDAO;
 import com.syncstudy.BL.AdminManager.AdminDAO;
@@ -32,4 +33,5 @@ public abstract class AbstractFactory {
 
     public abstract ProfileDAO createProfileDAO();
     public abstract CategoryDAO createCategoryDAO();
+    public abstract SharedFileDAO createSharedFileDAO();
 }

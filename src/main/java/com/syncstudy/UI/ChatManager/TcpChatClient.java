@@ -139,6 +139,7 @@ public class TcpChatClient {
         public String type; // "new", "edit", "delete", "file-chunk", ...
         public Message message;
         public Long id;
+        public Object data;
 
         // file transfer fields (optional)
         public String fileName;

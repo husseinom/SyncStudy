@@ -1,8 +1,11 @@
 package com.syncstudy.UI.ChatManager;
-import com.google.gson.Gson;
+
 import com.syncstudy.BL.ChatManager.ChatFacade;
 import com.syncstudy.BL.ChatManager.Message;
-import javafx.animation.PauseTransition;
+import com.syncstudy.BL.FileManager.FileFacade;
+import com.syncstudy.BL.FileManager.SharedFile;
+import com.syncstudy.UI.FileManager.FileDetailsController;
+import com.syncstudy.UI.FileManager.FileListController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,54 +18,46 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class ChatController {
 
-    @FXML
-    private ScrollPane scrollPane;
-
-    @FXML
-    private VBox messageContainer;
-
-    @FXML
-    private TextArea messageInput;
-
-    @FXML
-    private Button sendButton;
-
-    @FXML
-    private Label errorLabel;
-
-    @FXML
-    private Label groupNameLabel;
-
-    @FXML
-    private Button backButton;
+    @FXML private ScrollPane scrollPane;
+    @FXML private VBox messageContainer;
+    @FXML private TextArea messageInput;
+    @FXML private Button sendButton;
+    @FXML private Button uploadFileButton;
+    @FXML private Label errorLabel;
+    @FXML private Label groupNameLabel;
+    @FXML private Button backButton;
+    @FXML private Button viewFilesButton;
 
     private ChatFacade messageService;
+    private FileFacade fileService;
     private Long currentUserId;
     private Long currentGroupId;
     private boolean isAdmin;
     private TcpChatClient tcpClient;
-
-
+    private Set<Long> displayedFileIds = new HashSet<>();
 
     public void initialize() {
         messageService = ChatFacade.getInstance();
+        fileService = FileFacade.getInstance();
         errorLabel.setVisible(false);
 
-        // Auto-scroll to bottom when new content is added
         messageContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
             scrollPane.setVvalue(1.0);
         });
 
-        // Setup infinite scroll
         scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.doubleValue() == 0.0) {
                 loadOlderMessages();
@@ -86,6 +81,68 @@ public class ChatController {
         }
     }
 
+    @FXML
+    private void handleViewFiles() {
+        if (currentGroupId == null) {
+            showError("No group selected");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/syncstudy/UI/FileManager/FileListView.fxml"));
+            Parent root = loader.load();
+
+            FileListController controller = loader.getController();
+            String groupName = messageService.getGroupName(currentGroupId);
+            controller.setGroupData(currentGroupId, groupName, currentUserId, isAdmin);
+
+            Stage stage = new Stage();
+            stage.setTitle("Group Files - " + groupName);
+            stage.setScene(new javafx.scene.Scene(root, 900, 600));
+            stage.show();
+        } catch (Exception e) {
+            showError("Error opening files view: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleUploadFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select File to Upload");
+        File file = fileChooser.showOpenDialog(uploadFileButton.getScene().getWindow());
+
+        if (file == null) return;
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("File Description");
+        dialog.setHeaderText("Upload " + file.getName());
+        dialog.setContentText("Description (optional):");
+
+        dialog.showAndWait().ifPresent(description -> {
+            CompletableFuture.supplyAsync(() -> {
+                try {
+                    return fileService.uploadFile(currentGroupId, currentUserId, file, description);
+                } catch (Exception e) {
+                    Platform.runLater(() -> showError("Upload failed: " + e.getMessage()));
+                    return null;
+                }
+            }).thenAcceptAsync(uploadedFile -> {
+                if (uploadedFile != null) {
+                    showSuccess("File uploaded successfully");
+                    displayFileMessage(uploadedFile);
+
+                    if (tcpClient != null) {
+                        TcpChatClient.EventEnvelope envelope = new TcpChatClient.EventEnvelope();
+                        envelope.type = "file";
+                        envelope.data = uploadedFile;
+                        tcpClient.sendEvent(envelope);
+                    }
+                }
+            }, Platform::runLater);
+        });
+    }
+
     public void setCurrentUser(Long userId, boolean isAdmin) {
         this.currentUserId = userId;
         this.isAdmin = isAdmin;
@@ -94,6 +151,7 @@ public class ChatController {
     public void setCurrentGroup(Long groupId) {
         this.currentGroupId = groupId;
         groupNameLabel.setText(getCurrentGroupName());
+        displayedFileIds.clear();
         loadMessages();
         initializeRealtimeConnection();
     }
@@ -111,9 +169,16 @@ public class ChatController {
     }
 
     private void loadMessages() {
-        Platform.runLater(() -> {
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                return messageService.getMessages(currentGroupId);
+            } catch (Exception e) {
+                Platform.runLater(() -> showError("Error loading messages: " + e.getMessage()));
+                return List.<Message>of();
+            }
+        }).thenAcceptAsync(messages -> {
             messageContainer.getChildren().clear();
-            List<Message> messages = messageService.getMessages(currentGroupId);
+            displayedFileIds.clear();
 
             if (messages.isEmpty()) {
                 showEmptyState();
@@ -122,12 +187,32 @@ public class ChatController {
                     displayMessage(message);
                 }
             }
-        });
+
+            loadGroupFiles();
+            scrollToBottom();
+        }, Platform::runLater);
+    }
+
+    private void loadGroupFiles() {
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                return fileService.getFilesByGroupId(currentGroupId);
+            } catch (Exception e) {
+                Platform.runLater(() -> showError("Error loading files: " + e.getMessage()));
+                return List.<SharedFile>of();
+            }
+        }).thenAcceptAsync(files -> {
+            for (SharedFile file : files) {
+                if (!displayedFileIds.contains(file.getId())) {
+                    displayFileMessage(file);
+                }
+            }
+            scrollToBottom();
+        }, Platform::runLater);
     }
 
     private void loadOlderMessages() {
         // Implementation for infinite scroll
-        // Get timestamp of oldest message and load more
     }
 
     @FXML
@@ -137,11 +222,8 @@ public class ChatController {
         try {
             Message message = messageService.sendMessage(currentUserId, currentGroupId, content);
 
-            // If a message was created successfully, remove any empty-state placeholder
             if (message != null) {
-                // Remove the "No messages yet" empty state if present
                 if (!messageContainer.getChildren().isEmpty()) {
-                    // Check first child for empty state markers
                     if (messageContainer.getChildren().get(0) instanceof VBox) {
                         VBox firstChild = (VBox) messageContainer.getChildren().get(0);
                         if (!firstChild.getChildren().isEmpty()) {
@@ -153,11 +235,8 @@ public class ChatController {
                             }
                         }
                     }
-
                 }
 
-//                displayMessage(message);
-                // send an envelope so server will broadcast to other clients:
                 if (tcpClient != null) {
                     TcpChatClient.EventEnvelope envelope = new TcpChatClient.EventEnvelope("new", message, null);
                     tcpClient.sendEvent(envelope);
@@ -177,12 +256,141 @@ public class ChatController {
         messageContainer.getChildren().add(messageBox);
     }
 
+    private void displayFileMessage(SharedFile file) {
+        if (displayedFileIds.contains(file.getId())) {
+            return;
+        }
+        displayedFileIds.add(file.getId());
+
+        VBox fileBox = createFileMessageBox(file);
+        messageContainer.getChildren().add(fileBox);
+        scrollToBottom();
+    }
+
+    private VBox createFileMessageBox(SharedFile file) {
+        VBox messageBox = new VBox(5);
+        messageBox.setMaxWidth(600);
+        messageBox.setUserData("file_" + file.getId());
+
+        boolean isOwnFile = file.getUploaderId().equals(currentUserId);
+
+        HBox container = new HBox(10);
+        container.setAlignment(isOwnFile ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+
+        if (!isOwnFile) {
+            Circle avatar = new Circle(16);
+            avatar.setFill(Color.LIGHTGREEN);
+            container.getChildren().add(avatar);
+        }
+
+        VBox bubbleContainer = new VBox(3);
+
+        // Sender name
+        String uploaderName = file.getUploaderFullName() != null ?
+                file.getUploaderFullName() :
+                file.getUploaderUsername();
+        Label senderName = new Label(uploaderName != null ? uploaderName : "Unknown");
+        senderName.setStyle("-fx-font-weight: bold; -fx-font-size: 11;");
+        senderName.setAlignment(isOwnFile ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+        bubbleContainer.getChildren().add(senderName);
+
+        // Bubble with same styling as text messages
+        HBox bubble = new HBox(10);
+        bubble.setStyle(isOwnFile ?
+                "-fx-background-color: #E3F2FD; -fx-background-radius: 10; -fx-padding: 10;" :
+                "-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 10; -fx-border-color: #E0E0E0; -fx-border-radius: 10;");
+
+        // File info
+        VBox fileInfo = new VBox(3);
+        Label fileIcon = new Label("📎");
+        fileIcon.setStyle("-fx-font-size: 20;");
+        Label fileName = new Label(file.getOriginalFileName());
+        fileName.setStyle("-fx-font-weight: bold;");
+        Label fileSize = new Label(file.getFormattedFileSize());
+        fileSize.setStyle("-fx-font-size: 10; -fx-text-fill: gray;");
+        fileInfo.getChildren().addAll(fileIcon, fileName, fileSize);
+
+        // Action buttons (View & Download)
+        HBox buttonBox = new HBox(5);
+        Button viewButton = new Button("View");
+        viewButton.setStyle("-fx-font-size: 10; -fx-background-color: #2196F3; -fx-text-fill: white;");
+        viewButton.setOnAction(e -> handleViewFileDetails(file));
+
+        Button downloadButton = new Button("Download");
+        downloadButton.setStyle("-fx-font-size: 10; -fx-background-color: #4CAF50; -fx-text-fill: white;");
+        downloadButton.setOnAction(e -> handleDownloadFile(file));
+
+        buttonBox.getChildren().addAll(viewButton, downloadButton);
+
+        bubble.getChildren().addAll(fileInfo, buttonBox);
+
+        // Context menu (right-click)
+        ContextMenu contextMenu = createFileContextMenu(file);
+        bubble.setOnContextMenuRequested(e -> {
+            contextMenu.show(bubble, e.getScreenX(), e.getScreenY());
+        });
+
+        bubbleContainer.getChildren().add(bubble);
+
+        // Timestamp
+        HBox timestampBox = new HBox(5);
+        String timeText = file.getUploadTimestamp() != null ?
+                file.getUploadTimestamp().format(DateTimeFormatter.ofPattern("HH:mm")) : "";
+        Label timestamp = new Label(timeText);
+        timestamp.setStyle("-fx-font-size: 10; -fx-text-fill: gray;");
+        timestampBox.getChildren().add(timestamp);
+
+        bubbleContainer.getChildren().add(timestampBox);
+
+        container.getChildren().add(bubbleContainer);
+        messageBox.getChildren().add(container);
+
+        return messageBox;
+    }
+
+    private ContextMenu createFileContextMenu(SharedFile file) {
+        ContextMenu contextMenu = new ContextMenu();
+
+        boolean isOwner = file.getUploaderId().equals(currentUserId);
+
+        if (isOwner || isAdmin) {
+            MenuItem deleteItem = new MenuItem("Delete");
+            deleteItem.setOnAction(e -> handleDeleteFile(file));
+            contextMenu.getItems().add(deleteItem);
+        }
+
+        return contextMenu;
+    }
+
+
+
+    private void handleViewFileDetails(SharedFile file) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/syncstudy/UI/FileManager/FileDetails.fxml"));
+            Parent root = loader.load();
+
+            FileDetailsController controller = loader.getController();
+            controller.setFile(file);
+
+            Stage stage = new Stage();
+            stage.setTitle("File Details - " + file.getOriginalFileName());
+            stage.setScene(new javafx.scene.Scene(root, 500, 400));
+            stage.show();
+        } catch (Exception e) {
+            showError("Error opening file details: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isFileDisplayed(Long fileId) {
+        return displayedFileIds.contains(fileId);
+    }
+
     private VBox createMessageBox(Message message) {
         VBox messageBox = new VBox(5);
         messageBox.setMaxWidth(600);
 
         if (message == null) {
-            // Defensive: if message is null, return an empty placeholder
             Label error = new Label("[invalid message]");
             messageBox.getChildren().add(error);
             return messageBox;
@@ -202,18 +410,15 @@ public class ChatController {
 
         VBox bubbleContainer = new VBox(3);
 
-//        if (!isOwnMessage) {
         String senderFullName = message.getSenderFullName();
         String senderUsername = message.getSenderUsername();
         String senderDisplay = (senderFullName != null && !senderFullName.isEmpty()) ? senderFullName : senderUsername;
 
         Label senderName = new Label(senderDisplay != null ? senderDisplay : "");
         senderName.setStyle("-fx-font-weight: bold; -fx-font-size: 11;");
-        // Align sender name according to message side
         senderName.setAlignment(isOwnMessage ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
 
         bubbleContainer.getChildren().add(senderName);
-        //}
 
         HBox bubble = new HBox();
         bubble.setStyle(isOwnMessage ?
@@ -240,7 +445,6 @@ public class ChatController {
 
         bubbleContainer.getChildren().add(timestampBox);
 
-        // Add context menu for edit/delete
         ContextMenu contextMenu = createContextMenu(message);
         bubble.setOnContextMenuRequested(e -> {
             contextMenu.show(bubble, e.getScreenX(), e.getScreenY());
@@ -317,6 +521,64 @@ public class ChatController {
         });
     }
 
+    // methods for shared files
+    private void handleDownloadFile(SharedFile file) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save File");
+        fileChooser.setInitialFileName(file.getOriginalFileName());
+
+        File saveLocation = fileChooser.showSaveDialog(uploadFileButton.getScene().getWindow());
+        if (saveLocation == null) return;
+
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                File sourceFile = fileService.downloadFile(file.getId(), currentUserId);
+                java.nio.file.Files.copy(sourceFile.toPath(), saveLocation.toPath(),
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                return true;
+            } catch (Exception e) {
+                Platform.runLater(() -> showError("Download failed: " + e.getMessage()));
+                return false;
+            }
+        }).thenAcceptAsync(success -> {
+            if (success) {
+                showSuccess("File downloaded successfully");
+            }
+        }, Platform::runLater);
+    }
+
+    private void handleDeleteFile(SharedFile file) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete File");
+        alert.setHeaderText("Delete " + file.getOriginalFileName() + "?");
+        alert.setContentText("This action cannot be undone.");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    boolean deleted = fileService.deleteFile(file.getId(), currentUserId, isAdmin);
+                    if (deleted) {
+                        showSuccess("File deleted successfully");
+                        // Remove from UI
+                        messageContainer.getChildren().removeIf(node ->
+                                ("file_" + file.getId()).equals(node.getUserData()));
+
+                        // Notify other clients
+                        if (tcpClient != null) {
+                            TcpChatClient.EventEnvelope env = new TcpChatClient.EventEnvelope();
+                            env.type = "file-delete";
+                            env.id = file.getId();
+                            tcpClient.sendEvent(env);
+                        }
+                    }
+                } catch (Exception e) {
+                    showError(e.getMessage());
+                }
+            }
+        });
+    }
+
+
     private void showEmptyState() {
         VBox emptyState = new VBox(10);
         emptyState.setAlignment(Pos.CENTER);
@@ -328,13 +590,16 @@ public class ChatController {
         messageContainer.getChildren().add(emptyState);
     }
 
+    private void scrollToBottom() {
+        Platform.runLater(() -> scrollPane.setVvalue(1.0));
+    }
+
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
     }
 
     private void showSuccess(String message) {
-        // Show success toast notification
         System.out.println(message);
     }
 
@@ -357,30 +622,35 @@ public class ChatController {
         }
     }
 
-    // Add method to stop realtime (call on app shutdown)
     public void stopRealtime() {
         if (tcpClient != null) {
             tcpClient.disconnect();
             tcpClient = null;
         }
     }
-    // This method is called by TcpChatClient on the JavaFX thread
+
     public void handleRemoteEnvelope(TcpChatClient.EventEnvelope env) {
         if (env == null) return;
         switch (env.type) {
             case "new":
                 if (env.message != null) {
-                    // avoid duplicates depending on your UI logic; simple append:
                     displayMessage(env.message);
-                    loadMessages();
+                }
+                break;
+            case "file":
+                if (env.data instanceof SharedFile) {
+                    SharedFile file = (SharedFile) env.data;
+                    displayFileMessage(file);
+                }
+                break;
+            case "file-delete":
+                if (env.id != null) {
+                    messageContainer.getChildren().removeIf(node ->
+                            ("file_" + env.id).equals(node.getUserData()));
                 }
                 break;
             case "edit":
-                // simplest: reload messages to reflect edits
-                loadMessages();
-                break;
             case "delete":
-                // simplest: reload messages to reflect deletion
                 loadMessages();
                 break;
         }

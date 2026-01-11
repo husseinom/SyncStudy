@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.syncstudy.UI.FileManager.FileDetailsController"
+      stylesheets="@../GroupManager/group-styles.css"
+      prefWidth="500.0">
+
+   <HBox alignment="CENTER_LEFT" styleClass="group-details-header">
+      <Label text="File Details" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <padding>
+         <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+      </padding>
+   </HBox>
+
+   <GridPane hgap="10.0" vgap="10.0">
+      <columnConstraints>
+         <ColumnConstraints hgrow="NEVER" minWidth="120.0" />
+         <ColumnConstraints hgrow="ALWAYS" />
+      </columnConstraints>
+
+      <Label text="File Name:" GridPane.rowIndex="0" GridPane.columnIndex="0">
+         <font><Font name="System Bold" size="12.0" /></font>
+      </Label>
+      <Label fx:id="fileNameLabel" text="-" GridPane.rowIndex="0" GridPane.columnIndex="1" wrapText="true"/>
+
+      <Label text="File Type:" GridPane.rowIndex="1" GridPane.columnIndex="0">
+         <font><Font name="System Bold" size="12.0" /></font>
+      </Label>
+      <Label fx:id="fileTypeLabel" text="-" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+      <Label text="File Size:" GridPane.rowIndex="2" GridPane.columnIndex="0">
+         <font><Font name="System Bold" size="12.0" /></font>
+      </Label>
+      <Label fx:id="fileSizeLabel" text="-" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+      <Label text="Uploaded By:" GridPane.rowIndex="3" GridPane.columnIndex="0">
+         <font><Font name="System Bold" size="12.0" /></font>
+      </Label>
+      <Label fx:id="uploaderLabel" text="-" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+      <Label text="Upload Date:" GridPane.rowIndex="4" GridPane.columnIndex="0">
+         <font><Font name="System Bold" size="12.0" /></font>
+      </Label>
+      <Label fx:id="uploadDateLabel" text="-" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+      <padding>
+         <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+      </padding>
+   </GridPane>
+
+   <VBox VBox.vgrow="ALWAYS">
+      <Label text="Description:">
+         <font><Font name="System Bold" size="12.0" /></font>
+      </Label>
+      <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" prefHeight="150.0">
+         <TextArea fx:id="descriptionArea" wrapText="true" editable="false"/>
+      </ScrollPane>
+      <padding>
+         <Insets bottom="10.0" left="15.0" right="15.0" top="5.0" />
+      </padding>
+   </VBox>
+
+   <HBox alignment="CENTER">
+      <Button fx:id="closeButton" onAction="#onClose" text="Close" />
+      <padding>
+         <Insets bottom="15.0" left="15.0" right="15.0" top="10.0" />
+      </padding>
+   </HBox>
+</VBox>

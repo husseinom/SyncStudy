@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.syncstudy.UI.FileManager.FileListController"
+      stylesheets="@../GroupManager/group-styles.css">
+
+   <!-- Header -->
+   <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="group-manager-header">
+      <Label fx:id="groupNameLabel" text="Group Files" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <padding>
+         <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+      </padding>
+   </HBox>
+
+   <!-- Search Bar -->
+   <HBox alignment="CENTER_LEFT" spacing="10.0">
+      <Label text="Search:" />
+      <TextField fx:id="searchBar" promptText="File name..." HBox.hgrow="ALWAYS" />
+      <Button onAction="#onSearch" text="Search" />
+      <Button onAction="#onClear" text="Clear" />
+      <padding>
+         <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+      </padding>
+   </HBox>
+
+   <!-- Files Table -->
+   <TableView fx:id="filesTable" VBox.vgrow="ALWAYS">
+      <columns>
+         <TableColumn fx:id="nameColumn" prefWidth="250.0" text="File Name" />
+         <TableColumn fx:id="typeColumn" prefWidth="80.0" text="Type" />
+         <TableColumn fx:id="sizeColumn" prefWidth="100.0" text="Size" />
+         <TableColumn fx:id="uploaderColumn" prefWidth="150.0" text="Uploaded By" />
+         <TableColumn fx:id="dateColumn" prefWidth="150.0" text="Date" />
+      </columns>
+      <VBox.margin>
+         <Insets bottom="10.0" left="15.0" right="15.0" />
+      </VBox.margin>
+   </TableView>
+
+   <!-- Action Buttons -->
+   <HBox alignment="CENTER_RIGHT" spacing="10.0">
+      <Button onAction="#onRefresh" text="Refresh" />
+      <Button onAction="#onDownload" text="Download" />
+      <Button onAction="#onViewDetails" text="File Details" />
+      <Button onAction="#onDelete" text="Delete" />
+      <Button onAction="#onClose" text="Close" />
+      <padding>
+         <Insets bottom="15.0" left="15.0" right="15.0" top="10.0" />
+      </padding>
+   </HBox>
+</VBox>
