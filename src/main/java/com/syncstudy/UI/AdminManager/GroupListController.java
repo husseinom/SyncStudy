@@ -78,12 +78,20 @@ public class GroupListController {
         actionsColumn.setCellFactory(col -> new TableCell<>() {
             private final Button manageBtn = new Button("Gérer Membres");
             private final Button viewBtn = new Button("Voir");
-            private final HBox box = new HBox(5, manageBtn, viewBtn);
-            
+            private final HBox box = new HBox(8, manageBtn, viewBtn);
+
             {
-                manageBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 11px;");
-                viewBtn.setStyle("-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-size: 11px;");
-                
+                // Style des boutons avec taille minimum pour éviter la troncature
+                manageBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 8 16; -fx-background-radius: 6; -fx-cursor: hand;");
+                manageBtn.setMinWidth(120);
+                manageBtn.setPrefWidth(130);
+
+                viewBtn.setStyle("-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 8 16; -fx-background-radius: 6; -fx-cursor: hand;");
+                viewBtn.setMinWidth(60);
+                viewBtn.setPrefWidth(70);
+
+                box.setAlignment(javafx.geometry.Pos.CENTER);
+
                 manageBtn.setOnAction(e -> {
                     Group group = getTableView().getItems().get(getIndex());
                     openMembershipManagement(group);

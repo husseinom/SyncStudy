@@ -1,0 +1,158 @@
+/*
+ * ============================================
+ * SyncStudy - Main Stylesheet
+ * ============================================
+ *
+ * Ce fichier importe tous les styles du projet.
+ * Utilisez ce fichier dans votre application principale.
+ *
+ * Structure des styles :
+ * ├── styles/
+ * │   ├── base.css        - Variables, couleurs, typographie
+ * │   ├── components.css  - Tables, badges, modals, etc.
+ * │   ├── layout.css      - Sidebar, navbar, grilles
+ * │   ├── login.css       - Authentification
+ * │   ├── chat.css        - Messagerie
+ * │   ├── profile.css     - Profil utilisateur
+ * │   ├── sessions.css    - Sessions d'étude
+ * │   └── files.css       - Gestion des fichiers
+ * ├── AdminManager/
+ * │   └── admin-styles.css - UC8: Gestion des utilisateurs
+ * ├── GroupManager/
+ * │   └── group-styles.css - UC9: Catégories et groupes
+ * └── GroupMembership/
+ *     └── membership-styles.css - Adhésion aux groupes
+ *
+ * Usage dans JavaFX:
+ * scene.getStylesheets().add(getClass().getResource("/com/syncstudy/UI/main.css").toExternalForm());
+ */
+
+/* ================== IMPORT ALL STYLES ================== */
+
+/* Note: JavaFX CSS doesn't support @import, so you need to add all stylesheets manually.
+ * In your Java code, add them like this:
+ *
+ * scene.getStylesheets().addAll(
+ *     getClass().getResource("/com/syncstudy/UI/styles/base.css").toExternalForm(),
+ *     getClass().getResource("/com/syncstudy/UI/styles/components.css").toExternalForm(),
+ *     getClass().getResource("/com/syncstudy/UI/styles/layout.css").toExternalForm()
+ * );
+ */
+
+/* ================== GLOBAL OVERRIDES ================== */
+.root {
+    -fx-font-family: "Segoe UI", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: #f0f3f7;
+
+    /* Primary Colors */
+    -fx-primary: #4361ee;
+    -fx-primary-dark: #3a56d4;
+    -fx-primary-light: #6b8cff;
+
+    /* Secondary Colors */
+    -fx-secondary: #7209b7;
+    -fx-secondary-dark: #5c078f;
+
+    /* Accent Colors */
+    -fx-accent: #4cc9f0;
+
+    /* Status Colors */
+    -fx-success: #06d6a0;
+    -fx-warning: #ffd60a;
+    -fx-danger: #ef476f;
+    -fx-info: #118ab2;
+
+    /* Neutral Colors */
+    -fx-dark: #1a1a2e;
+    -fx-dark-gray: #2d3436;
+    -fx-gray: #636e72;
+    -fx-light-gray: #b2bec3;
+    -fx-lighter-gray: #dfe6e9;
+    -fx-light: #f8f9fa;
+    -fx-white: #ffffff;
+
+    /* Background */
+    -fx-bg-primary: #f0f3f7;
+    -fx-bg-card: #ffffff;
+}
+
+/* ================== COMMON ANIMATIONS ================== */
+/* Hover lift effect for cards */
+.card-hover:hover {
+    -fx-translate-y: -4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 8);
+}
+
+/* Button press effect */
+.btn-press:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Fade transition for modals */
+.modal-fade-in {
+    -fx-opacity: 0;
+}
+
+.modal-fade-out {
+    -fx-opacity: 1;
+}
+
+/* ================== RESPONSIVE HELPERS ================== */
+/* These can be toggled via code based on window size */
+.mobile-only {
+    -fx-managed: false;
+    -fx-visible: false;
+}
+
+.desktop-only {
+    -fx-managed: true;
+    -fx-visible: true;
+}
+
+/* ================== ACCESSIBILITY ================== */
+/* High contrast mode support */
+.high-contrast .button {
+    -fx-border-width: 2;
+}
+
+.high-contrast .text-field {
+    -fx-border-width: 2;
+}
+
+/* Focus indicators for keyboard navigation */
+.focused-visible {
+    -fx-effect: dropshadow(gaussian, -fx-primary, 4, 0.5, 0, 0);
+}
+
+/* ================== PRINT STYLES ================== */
+.print-only {
+    -fx-managed: false;
+    -fx-visible: false;
+}
+
+/* ================== DARK MODE SUPPORT ================== */
+/* Can be activated by adding 'dark-mode' class to root */
+.dark-mode {
+    -fx-bg-primary: #1a1a2e;
+    -fx-bg-card: #2d3436;
+    -fx-dark: #f8f9fa;
+    -fx-gray: #b2bec3;
+    -fx-light-gray: #636e72;
+}
+
+.dark-mode .card {
+    -fx-background-color: #2d3436;
+}
+
+.dark-mode .label {
+    -fx-text-fill: #f8f9fa;
+}
+
+.dark-mode .text-field {
+    -fx-background-color: #1a1a2e;
+    -fx-border-color: #636e72;
+    -fx-text-fill: #f8f9fa;
+}
+

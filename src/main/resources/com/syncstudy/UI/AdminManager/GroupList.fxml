@@ -30,7 +30,8 @@
             <TableColumn fx:id="categoryColumn" text="Catégorie" prefWidth="150"/>
             <TableColumn fx:id="memberCountColumn" text="Membres" prefWidth="80"/>
             <TableColumn fx:id="createdAtColumn" text="Date création" prefWidth="120"/>
-            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="200"/>
+
+            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="250"/>
         </columns>
     </TableView>
 

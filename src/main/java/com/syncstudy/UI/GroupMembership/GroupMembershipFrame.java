@@ -1,5 +1,6 @@
 package com.syncstudy.UI.GroupMembership;
 
+import com.syncstudy.UI.SessionManager.AppUI;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,7 +29,9 @@ public class GroupMembershipFrame {
             controller.setGroupId(groupId, groupName);
             
             stage.setTitle("Gestion des membres - " + groupName);
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            AppUI.applyMembershipStyles(scene);
+            stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
             

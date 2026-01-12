@@ -121,14 +121,20 @@ public class CategoryManagementController {
             private final Button editBtn = new Button("Edit");
             private final Button deleteBtn = new Button("Delete");
             private final Button assignBtn = new Button("Assign Groups");
-            private final HBox buttons = new HBox(5, editBtn, deleteBtn, assignBtn);
+            private final HBox buttons = new HBox(8, editBtn, deleteBtn, assignBtn);
 
             {
                 buttons.setAlignment(Pos.CENTER);
 
-                editBtn.setStyle("-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 3 8;");
-                deleteBtn.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 3 8;");
-                assignBtn.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 3 8;");
+                // Style avec taille minimum pour éviter la troncature
+                editBtn.setStyle("-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 6; -fx-cursor: hand;");
+                editBtn.setMinWidth(60);
+
+                deleteBtn.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 6; -fx-cursor: hand;");
+                deleteBtn.setMinWidth(70);
+
+                assignBtn.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 6; -fx-cursor: hand;");
+                assignBtn.setMinWidth(110);
 
                 editBtn.setOnAction(event -> {
                     Category category = getTableView().getItems().get(getIndex());
@@ -152,7 +158,7 @@ public class CategoryManagementController {
                 setGraphic(empty ? null : buttons);
             }
         });
-        actionsColumn.setPrefWidth(230);
+        actionsColumn.setPrefWidth(280);
 
         // Set table items
         categoriesTable.setItems(categoriesList);

@@ -4,6 +4,7 @@ import com.syncstudy.BL.AdminManager.AdminFacade;
 import com.syncstudy.BL.ProfileManager.UserProfile;
 import com.syncstudy.BL.SessionManager.SessionFacade;
 import com.syncstudy.BL.SessionManager.User;
+import com.syncstudy.UI.SessionManager.AppUI;
 import com.syncstudy.UI.SessionManager.LoginController;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -245,7 +246,9 @@ public class UserDashboardController {
 
             // Switch scene
             Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(new Scene(dashboard));
+            Scene scene = new Scene(dashboard);
+            AppUI.applyGlobalStyles(scene);
+            stage.setScene(scene);
             stage.setTitle("SyncStudy - Login");
             stage.setWidth(1100);
             stage.setHeight(700);

@@ -8,6 +8,7 @@ import com.syncstudy.BL.GroupMembership.GroupMembershipFacade;
 import com.syncstudy.BL.SessionManager.User;
 import com.syncstudy.UI.ChatManager.ChatController;
 import com.syncstudy.UI.ProfileManager.UserDashboardController;
+import com.syncstudy.UI.SessionManager.AppUI;
 import com.syncstudy.WS.AppConfig;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -192,7 +193,9 @@ public class GroupController {
             controller.setCurrentUserId(currentUser.getId());
 
             Stage stage = (Stage) groupsTable.getScene().getWindow();
-            stage.setScene(new Scene(dashboard));
+            Scene scene = new Scene(dashboard);
+            AppUI.applyGlobalStyles(scene);
+            stage.setScene(scene);
             stage.setTitle("SyncStudy - User Dashboard");
             stage.setWidth(1100);
             stage.setHeight(700);
@@ -216,7 +219,9 @@ public class GroupController {
             
             Stage detailStage = new Stage();
             detailStage.setTitle("Détails: " + group.getName());
-            detailStage.setScene(new Scene(root, 900, 700));
+            Scene scene = new Scene(root, 900, 700);
+            AppUI.applyGroupStyles(scene);
+            detailStage.setScene(scene);
             detailStage.initModality(Modality.APPLICATION_MODAL);
             detailStage.showAndWait();
             
@@ -257,7 +262,9 @@ public class GroupController {
 
             Stage stage = (Stage) groupsTable.getScene().getWindow();
             stage.setTitle("SyncStudy - Chat (Group " + selectedGroup.getName() + ")");
-            stage.setScene(new Scene(root, 800, 600));
+            Scene scene = new Scene(root, 800, 600);
+            AppUI.applyGlobalStyles(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
         } catch (IOException e) {
             showError("Failed to open chat: " + e.getMessage());

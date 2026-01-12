@@ -1,0 +1,564 @@
+/*
+ * ============================================
+ * SyncStudy - File Manager Styles
+ * ============================================
+ * Gestion des fichiers et uploads
+ */
+
+/* ================== FILE MANAGER CONTAINER ================== */
+.file-manager {
+    -fx-background-color: #f0f3f7;
+    -fx-padding: 24;
+}
+
+/* ================== FILE MANAGER HEADER ================== */
+.file-manager-header {
+    -fx-background-color: linear-gradient(to bottom right, #f7971e, #ffd200);
+    -fx-background-radius: 16;
+    -fx-padding: 32;
+    -fx-effect: dropshadow(gaussian, rgba(247, 151, 30, 0.3), 20, 0, 0, 8);
+}
+
+.file-manager-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.file-manager-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+}
+
+/* ================== STORAGE INFO ================== */
+.storage-info {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+}
+
+.storage-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a1a2e;
+}
+
+.storage-bar {
+    -fx-background-color: #e9ecef;
+    -fx-background-radius: 10;
+    -fx-pref-height: 10;
+}
+
+.storage-bar-fill {
+    -fx-background-color: linear-gradient(to right, #f7971e, #ffd200);
+    -fx-background-radius: 10;
+}
+
+.storage-bar-fill.warning {
+    -fx-background-color: linear-gradient(to right, #ffa500, #ff6b6b);
+}
+
+.storage-bar-fill.danger {
+    -fx-background-color: linear-gradient(to right, #ef476f, #d63d62);
+}
+
+.storage-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: #636e72;
+}
+
+.storage-used {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a2e;
+}
+
+/* ================== FILE TOOLBAR ================== */
+.file-toolbar {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 16 20;
+    -fx-spacing: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 4);
+}
+
+.file-search {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 25;
+    -fx-padding: 10 16;
+    -fx-min-width: 280;
+    -fx-border-color: transparent;
+}
+
+.file-search:focused {
+    -fx-background-color: white;
+    -fx-border-color: #f7971e;
+    -fx-border-radius: 25;
+    -fx-border-width: 2;
+}
+
+.view-toggle {
+    -fx-spacing: 4;
+}
+
+.view-toggle-btn {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-cursor: hand;
+}
+
+.view-toggle-btn:hover {
+    -fx-background-color: #e9ecef;
+}
+
+.view-toggle-btn.active {
+    -fx-background-color: #f7971e;
+    -fx-text-fill: white;
+}
+
+.upload-btn {
+    -fx-background-color: linear-gradient(to bottom right, #f7971e, #ffd200);
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 10 20;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+}
+
+.upload-btn:hover {
+    -fx-effect: dropshadow(gaussian, rgba(247, 151, 30, 0.4), 12, 0, 0, 4);
+}
+
+/* ================== BREADCRUMB ================== */
+.file-breadcrumb {
+    -fx-spacing: 8;
+    -fx-padding: 16 0;
+}
+
+.breadcrumb-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #636e72;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.breadcrumb-item:hover {
+    -fx-text-fill: #f7971e;
+}
+
+.breadcrumb-item.current {
+    -fx-text-fill: #1a1a2e;
+    -fx-font-weight: 600;
+}
+
+.breadcrumb-separator {
+    -fx-text-fill: #b2bec3;
+}
+
+/* ================== FILE GRID VIEW ================== */
+.file-grid {
+    -fx-hgap: 16;
+    -fx-vgap: 16;
+    -fx-padding: 0;
+}
+
+.file-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 4);
+    -fx-cursor: hand;
+    -fx-min-width: 160;
+    -fx-pref-width: 180;
+    -fx-alignment: CENTER;
+}
+
+.file-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 16, 0, 0, 8);
+    -fx-translate-y: -2;
+}
+
+.file-card.selected {
+    -fx-border-color: #f7971e;
+    -fx-border-width: 2;
+    -fx-border-radius: 12;
+}
+
+.file-icon {
+    -fx-min-width: 64;
+    -fx-min-height: 64;
+    -fx-alignment: CENTER;
+    -fx-font-size: 32px;
+}
+
+.file-icon-pdf {
+    -fx-text-fill: #ef476f;
+}
+
+.file-icon-doc {
+    -fx-text-fill: #4361ee;
+}
+
+.file-icon-xls {
+    -fx-text-fill: #06d6a0;
+}
+
+.file-icon-ppt {
+    -fx-text-fill: #f7971e;
+}
+
+.file-icon-img {
+    -fx-text-fill: #7209b7;
+}
+
+.file-icon-zip {
+    -fx-text-fill: #636e72;
+}
+
+.file-icon-folder {
+    -fx-text-fill: #ffd200;
+}
+
+.file-thumbnail {
+    -fx-background-radius: 8;
+    -fx-min-width: 80;
+    -fx-min-height: 80;
+}
+
+.file-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a1a2e;
+    -fx-text-alignment: CENTER;
+    -fx-wrap-text: true;
+    -fx-padding: 8 0 0 0;
+}
+
+.file-size {
+    -fx-font-size: 11px;
+    -fx-text-fill: #b2bec3;
+}
+
+.file-menu-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #b2bec3;
+    -fx-cursor: hand;
+}
+
+.file-menu-btn:hover {
+    -fx-text-fill: #636e72;
+}
+
+/* ================== FILE LIST VIEW ================== */
+.file-list-container {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+}
+
+.file-list-header {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 16 16 0 0;
+    -fx-padding: 12 20;
+    -fx-border-color: transparent transparent #e9ecef transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.file-list-header-cell {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #b2bec3;
+    -fx-text-transform: uppercase;
+}
+
+.file-list-item {
+    -fx-background-color: transparent;
+    -fx-padding: 12 20;
+    -fx-spacing: 16;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cursor: hand;
+}
+
+.file-list-item:hover {
+    -fx-background-color: #fafbff;
+}
+
+.file-list-item.selected {
+    -fx-background-color: rgba(247, 151, 30, 0.08);
+}
+
+.file-list-icon {
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-background-radius: 8;
+    -fx-alignment: CENTER;
+    -fx-font-size: 18px;
+}
+
+.file-list-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #1a1a2e;
+}
+
+.file-list-date {
+    -fx-font-size: 13px;
+    -fx-text-fill: #636e72;
+}
+
+.file-list-size {
+    -fx-font-size: 13px;
+    -fx-text-fill: #636e72;
+}
+
+.file-list-uploader {
+    -fx-spacing: 8;
+}
+
+.file-list-uploader-avatar {
+    -fx-background-radius: 50;
+    -fx-min-width: 24;
+    -fx-min-height: 24;
+}
+
+.file-list-uploader-name {
+    -fx-font-size: 13px;
+    -fx-text-fill: #636e72;
+}
+
+/* ================== UPLOAD DIALOG ================== */
+.upload-dialog {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-min-width: 500;
+}
+
+.upload-dialog-header {
+    -fx-background-color: linear-gradient(to bottom right, #f7971e, #ffd200);
+    -fx-background-radius: 16 16 0 0;
+    -fx-padding: 24;
+}
+
+.upload-dropzone {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dfe6e9;
+    -fx-border-width: 2;
+    -fx-border-style: dashed;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-min-height: 200;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+}
+
+.upload-dropzone:hover {
+    -fx-border-color: #f7971e;
+    -fx-background-color: rgba(247, 151, 30, 0.05);
+}
+
+.upload-dropzone.active {
+    -fx-border-color: #f7971e;
+    -fx-background-color: rgba(247, 151, 30, 0.1);
+    -fx-border-width: 3;
+}
+
+.upload-dropzone-icon {
+    -fx-font-size: 48px;
+    -fx-text-fill: #b2bec3;
+}
+
+.upload-dropzone-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #636e72;
+}
+
+.upload-dropzone-hint {
+    -fx-font-size: 13px;
+    -fx-text-fill: #b2bec3;
+}
+
+.upload-browse-btn {
+    -fx-background-color: #f7971e;
+    -fx-text-fill: white;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+}
+
+/* Upload Progress */
+.upload-progress-container {
+    -fx-spacing: 12;
+    -fx-padding: 16;
+}
+
+.upload-file-item {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 10;
+    -fx-padding: 12 16;
+    -fx-spacing: 12;
+}
+
+.upload-file-icon {
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-background-radius: 8;
+    -fx-alignment: CENTER;
+}
+
+.upload-file-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a1a2e;
+}
+
+.upload-file-size {
+    -fx-font-size: 11px;
+    -fx-text-fill: #b2bec3;
+}
+
+.upload-progress-bar {
+    -fx-background-color: #e9ecef;
+    -fx-background-radius: 4;
+    -fx-pref-height: 6;
+}
+
+.upload-progress-bar > .bar {
+    -fx-background-color: linear-gradient(to right, #f7971e, #ffd200);
+    -fx-background-radius: 4;
+}
+
+.upload-progress-text {
+    -fx-font-size: 11px;
+    -fx-text-fill: #636e72;
+}
+
+.upload-cancel-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ef476f;
+    -fx-cursor: hand;
+}
+
+/* ================== FILE PREVIEW ================== */
+.file-preview-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.85);
+}
+
+.file-preview-container {
+    -fx-padding: 40;
+}
+
+.file-preview-close {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 50;
+    -fx-min-width: 48;
+    -fx-min-height: 48;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.file-preview-close:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.file-preview-content {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 40, 0, 0, 10);
+}
+
+.file-preview-header {
+    -fx-padding: 16 24;
+    -fx-border-color: transparent transparent #e9ecef transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.file-preview-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a1a2e;
+}
+
+.file-preview-actions {
+    -fx-spacing: 8;
+}
+
+.file-preview-action-btn {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.file-preview-action-btn:hover {
+    -fx-background-color: #e9ecef;
+}
+
+.file-preview-download-btn {
+    -fx-background-color: #f7971e;
+    -fx-text-fill: white;
+}
+
+.file-preview-download-btn:hover {
+    -fx-background-color: #e68a19;
+}
+
+/* ================== EMPTY STATE ================== */
+.empty-files {
+    -fx-alignment: CENTER;
+    -fx-padding: 60;
+    -fx-spacing: 20;
+}
+
+.empty-files-icon {
+    -fx-font-size: 80px;
+    -fx-text-fill: #dfe6e9;
+}
+
+.empty-files-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #636e72;
+}
+
+.empty-files-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #b2bec3;
+}
+
+/* ================== CONTEXT MENU ================== */
+.file-context-menu {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 16, 0, 0, 4);
+    -fx-padding: 8;
+}
+
+.file-context-menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 10 16;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.file-context-menu-item:hover {
+    -fx-background-color: #f8f9fa;
+}
+
+.file-context-menu-item.danger {
+    -fx-text-fill: #ef476f;
+}
+
+.file-context-menu-item.danger:hover {
+    -fx-background-color: rgba(239, 71, 111, 0.1);
+}
+
+.file-context-divider {
+    -fx-background-color: #e9ecef;
+    -fx-pref-height: 1;
+    -fx-margin: 4 0;
+}
+

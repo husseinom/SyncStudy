@@ -1,104 +1,398 @@
-/* SyncStudy Admin Module Styles */
+/*
+ * ============================================
+ * SyncStudy - Admin Module Styles (UC8)
+ * ============================================
+ * Gestion des utilisateurs, blocage, suppression
+ */
 
-/* General */
-.root {
-    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+/* ================== ADMIN DASHBOARD ================== */
+.admin-dashboard {
+    -fx-background-color: -fx-bg-primary;
 }
 
-/* Sidebar */
-.sidebar {
-    -fx-background-color: #343a40;
+.admin-header {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
+    -fx-padding: 32 40;
+    -fx-background-radius: 0 0 24 24;
 }
 
-.sidebar-button {
-    -fx-background-color: transparent;
+.admin-header-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
     -fx-text-fill: white;
-    -fx-alignment: CENTER_LEFT;
-    -fx-padding: 10 20;
-    -fx-font-size: 13px;
-    -fx-cursor: hand;
 }
 
-.sidebar-button:hover {
-    -fx-background-color: #495057;
+.admin-header-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
 }
 
-.sidebar-button.active {
-    -fx-background-color: #495057;
+/* ================== STATS CARDS ================== */
+.stats-container {
+    -fx-spacing: 20;
+    -fx-padding: 0;
 }
 
-/* Table */
-.table-view {
+.stat-card {
     -fx-background-color: white;
-    -fx-border-color: #dee2e6;
-    -fx-border-radius: 4;
+    -fx-background-radius: 16;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+    -fx-min-width: 200;
 }
 
-.table-view .column-header {
-    -fx-background-color: #f8f9fa;
+.stat-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 8);
+    -fx-translate-y: -4;
+}
+
+.stat-icon {
+    -fx-background-radius: 12;
+    -fx-min-width: 56;
+    -fx-min-height: 56;
+    -fx-alignment: CENTER;
+    -fx-font-size: 24px;
+}
+
+.stat-icon-users {
+    -fx-background-color: rgba(67, 97, 238, 0.15);
+    -fx-text-fill: #4361ee;
+}
+
+.stat-icon-active {
+    -fx-background-color: rgba(6, 214, 160, 0.15);
+    -fx-text-fill: #06d6a0;
+}
+
+.stat-icon-blocked {
+    -fx-background-color: rgba(239, 71, 111, 0.15);
+    -fx-text-fill: #ef476f;
+}
+
+.stat-icon-groups {
+    -fx-background-color: rgba(114, 9, 183, 0.15);
+    -fx-text-fill: #7209b7;
+}
+
+.stat-value {
+    -fx-font-size: 36px;
     -fx-font-weight: bold;
-    -fx-text-fill: #495057;
+    -fx-text-fill: #1a1a2e;
 }
 
-.table-view .table-row-cell:selected {
-    -fx-background-color: #e3f2fd;
+.stat-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #636e72;
+    -fx-font-weight: 500;
 }
 
-.table-view .table-row-cell:hover {
-    -fx-background-color: #f5f5f5;
+.stat-change {
+    -fx-font-size: 12px;
+    -fx-padding: 4 8;
+    -fx-background-radius: 50;
 }
 
-/* Status Badges */
-.badge {
-    -fx-padding: 2 8;
-    -fx-background-radius: 4;
+.stat-change-positive {
+    -fx-background-color: rgba(6, 214, 160, 0.15);
+    -fx-text-fill: #059669;
+}
+
+.stat-change-negative {
+    -fx-background-color: rgba(239, 71, 111, 0.15);
+    -fx-text-fill: #ef476f;
+}
+
+/* ================== USER MANAGEMENT TABLE ================== */
+.user-table-container {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+}
+
+.user-table-header {
+    -fx-padding: 20 24;
+    -fx-border-color: transparent transparent #eee transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.user-table-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a2e;
+}
+
+.user-table-actions {
+    -fx-spacing: 12;
+}
+
+/* User Avatar in Table */
+.user-avatar {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2);
+    -fx-background-radius: 50;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-max-width: 40;
+    -fx-max-height: 40;
+    -fx-alignment: CENTER;
+}
+
+.user-avatar-text {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.user-info {
+    -fx-spacing: 2;
+}
+
+.user-name {
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-text-fill: #1a1a2e;
+}
+
+.user-email {
+    -fx-font-size: 12px;
+    -fx-text-fill: #636e72;
+}
+
+/* Action Buttons in Table */
+.action-btn {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.action-btn:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+.action-btn-view {
+    -fx-text-fill: #4361ee;
+}
+
+.action-btn-view:hover {
+    -fx-background-color: rgba(67, 97, 238, 0.1);
+}
+
+.action-btn-block {
+    -fx-text-fill: #ffa500;
+}
+
+.action-btn-block:hover {
+    -fx-background-color: rgba(255, 165, 0, 0.1);
+}
+
+.action-btn-unblock {
+    -fx-text-fill: #06d6a0;
+}
+
+.action-btn-unblock:hover {
+    -fx-background-color: rgba(6, 214, 160, 0.1);
+}
+
+.action-btn-delete {
+    -fx-text-fill: #ef476f;
+}
+
+.action-btn-delete:hover {
+    -fx-background-color: rgba(239, 71, 111, 0.1);
+}
+
+/* ================== USER ACTIVITY PANEL ================== */
+.activity-panel {
+    -fx-background-color: white;
+    -fx-min-width: 400;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, -4, 0);
+}
+
+.activity-header {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2);
+    -fx-padding: 24;
+}
+
+.activity-user-avatar {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 50;
+    -fx-min-width: 80;
+    -fx-min-height: 80;
+    -fx-alignment: CENTER;
+}
+
+.activity-user-name {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.activity-user-email {
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+}
+
+.activity-stat {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-background-radius: 12;
+    -fx-padding: 16;
+    -fx-alignment: CENTER;
+}
+
+.activity-stat-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.activity-stat-label {
     -fx-font-size: 11px;
+    -fx-text-fill: rgba(255, 255, 255, 0.7);
+}
+
+/* Activity Tabs */
+.activity-tabs {
+    -fx-padding: 0;
+}
+
+.activity-tab {
+    -fx-background-color: transparent;
+    -fx-padding: 16 20;
+    -fx-font-size: 13px;
+    -fx-text-fill: #636e72;
+}
+
+.activity-tab:selected {
+    -fx-text-fill: #4361ee;
+    -fx-border-color: transparent transparent #4361ee transparent;
+    -fx-border-width: 0 0 3 0;
+}
+
+/* Activity List Items */
+.activity-item {
+    -fx-padding: 16;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.activity-item:hover {
+    -fx-background-color: #f8f9ff;
+}
+
+.activity-item-icon {
+    -fx-background-radius: 8;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-alignment: CENTER;
+    -fx-font-size: 14px;
+}
+
+.activity-item-title {
+    -fx-font-weight: 600;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a1a2e;
+}
+
+.activity-item-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #636e72;
+}
+
+.activity-item-time {
+    -fx-font-size: 11px;
+    -fx-text-fill: #b2bec3;
+}
+
+/* ================== BLOCK USER DIALOG ================== */
+.block-dialog {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-min-width: 450;
+}
+
+.block-dialog-header {
+    -fx-background-color: linear-gradient(to bottom right, #f093fb, #f5576c);
+    -fx-background-radius: 16 16 0 0;
+    -fx-padding: 24;
+}
+
+.block-dialog-icon {
+    -fx-font-size: 48px;
+    -fx-text-fill: white;
+}
+
+.block-dialog-title {
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
-}
-
-.badge-active {
-    -fx-background-color: #28a745;
     -fx-text-fill: white;
 }
 
-.badge-blocked {
-    -fx-background-color: #dc3545;
-    -fx-text-fill: white;
+.block-user-preview {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 12;
+    -fx-padding: 16;
+    -fx-spacing: 12;
 }
 
-/* Buttons */
-.btn-primary {
-    -fx-background-color: #007bff;
-    -fx-text-fill: white;
-    -fx-cursor: hand;
+.reason-field {
+    -fx-min-height: 100;
 }
 
-.btn-primary:hover {
-    -fx-background-color: #0056b3;
+/* ================== DELETE USER DIALOG ================== */
+.delete-dialog {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-min-width: 500;
 }
 
-.btn-success {
-    -fx-background-color: #28a745;
-    -fx-text-fill: white;
-    -fx-cursor: hand;
+.delete-dialog-header {
+    -fx-background-color: linear-gradient(to bottom right, #ef476f, #ff6b6b);
+    -fx-background-radius: 16 16 0 0;
+    -fx-padding: 24;
 }
 
-.btn-success:hover {
-    -fx-background-color: #1e7e34;
+.delete-warning {
+    -fx-background-color: rgba(239, 71, 111, 0.1);
+    -fx-background-radius: 12;
+    -fx-padding: 16;
+    -fx-border-color: #ef476f;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 0 12 12 0;
 }
 
-.btn-warning {
-    -fx-background-color: #ffc107;
-    -fx-text-fill: black;
-    -fx-cursor: hand;
+.delete-warning-icon {
+    -fx-text-fill: #ef476f;
+    -fx-font-size: 24px;
 }
 
-.btn-warning:hover {
-    -fx-background-color: #d39e00;
+.delete-warning-text {
+    -fx-text-fill: #c0392b;
+    -fx-font-weight: 600;
 }
 
-.btn-danger {
-    -fx-background-color: #dc3545;
+.delete-items-list {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 12;
+    -fx-padding: 16;
+}
+
+.delete-item {
+    -fx-padding: 8 0;
+    -fx-text-fill: #636e72;
+}
+
+.delete-item-icon {
+    -fx-text-fill: #ef476f;
+}
+
+.confirm-field {
+    -fx-border-color: #ef476f;
+    -fx-background-color: rgba(239, 71, 111, 0.05);
+}
+
+.btn-delete-confirm {
+    -fx-background-color: #ef476f
     -fx-text-fill: white;
     -fx-cursor: hand;
 }

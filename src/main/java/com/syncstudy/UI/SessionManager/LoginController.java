@@ -102,7 +102,9 @@ public class LoginController {
 
             // Switch scene
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(dashboard));
+            Scene scene = new Scene(dashboard);
+            AppUI.applyAdminStyles(scene);
+            stage.setScene(scene);
             stage.setTitle("SyncStudy - Admin Dashboard");
             stage.setWidth(1100);
             stage.setHeight(700);
@@ -128,7 +130,9 @@ public class LoginController {
 
             // Switch scene
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(dashboard));
+            Scene scene = new Scene(dashboard);
+            AppUI.applyGlobalStyles(scene);
+            stage.setScene(scene);
             stage.setTitle("SyncStudy - User Dashboard");
             stage.setWidth(1100);
             stage.setHeight(700);
@@ -155,7 +159,9 @@ public class LoginController {
 
             // Switch scene
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(dashboard));
+            Scene scene = new Scene(dashboard);
+            AppUI.applyGlobalStyles(scene);
+            stage.setScene(scene);
             stage.setTitle("SyncStudy - Sign up");
             stage.setWidth(1100);
             stage.setHeight(700);
@@ -177,7 +183,9 @@ public class LoginController {
 
             // Switch scene
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(groupDashboard));
+            Scene scene = new Scene(groupDashboard);
+            AppUI.applyGroupStyles(scene);
+            stage.setScene(scene);
             stage.setTitle("SyncStudy - Groupes d'étude");
             stage.setWidth(1200);
             stage.setHeight(800);
@@ -214,7 +222,9 @@ public class LoginController {
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setTitle("SyncStudy - Chat");
-            stage.setScene(new Scene(root, 800, 600));
+            Scene scene = new Scene(root, 800, 600);
+            AppUI.applyGlobalStyles(scene);
+            stage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();
         }

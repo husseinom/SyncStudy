@@ -1,0 +1,526 @@
+/*
+ * ============================================
+ * SyncStudy - Study Sessions Styles
+ * ============================================
+ * Gestion des sessions d'étude
+ */
+
+/* ================== SESSIONS CONTAINER ================== */
+.sessions-container {
+    -fx-background-color: #f0f3f7;
+    -fx-padding: 24;
+}
+
+/* ================== SESSIONS HEADER ================== */
+.sessions-header {
+    -fx-background-color: linear-gradient(to bottom right, #7209b7, #3a0ca3);
+    -fx-background-radius: 16;
+    -fx-padding: 32;
+    -fx-effect: dropshadow(gaussian, rgba(114, 9, 183, 0.3), 20, 0, 0, 8);
+}
+
+.sessions-header-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.sessions-header-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+}
+
+/* ================== CALENDAR VIEW ================== */
+.calendar-container {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+}
+
+.calendar-header {
+    -fx-padding: 20 24;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.calendar-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a2e;
+}
+
+.calendar-nav-btn {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-cursor: hand;
+}
+
+.calendar-nav-btn:hover {
+    -fx-background-color: #e9ecef;
+}
+
+.calendar-grid {
+    -fx-padding: 16;
+    -fx-hgap: 4;
+    -fx-vgap: 4;
+}
+
+.calendar-day-header {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #b2bec3;
+    -fx-alignment: CENTER;
+    -fx-padding: 8;
+}
+
+.calendar-day {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.calendar-day:hover {
+    -fx-background-color: #f0f3f7;
+}
+
+.calendar-day-other-month {
+    -fx-text-fill: #dfe6e9;
+}
+
+.calendar-day-today {
+    -fx-background-color: rgba(114, 9, 183, 0.1);
+    -fx-text-fill: #7209b7;
+    -fx-font-weight: bold;
+}
+
+.calendar-day-selected {
+    -fx-background-color: #7209b7;
+    -fx-text-fill: white;
+}
+
+.calendar-day-has-session {
+    -fx-border-color: #7209b7;
+    -fx-border-width: 0 0 2 0;
+}
+
+.calendar-day-session-dot {
+    -fx-background-color: #7209b7;
+    -fx-background-radius: 50;
+    -fx-min-width: 6;
+    -fx-min-height: 6;
+}
+
+/* ================== SESSION CARDS ================== */
+.sessions-grid {
+    -fx-hgap: 20;
+    -fx-vgap: 20;
+}
+
+.session-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+    -fx-cursor: hand;
+    -fx-min-width: 300;
+}
+
+.session-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0, 0, 8);
+    -fx-translate-y: -4;
+}
+
+.session-card-header {
+    -fx-background-radius: 16 16 0 0;
+    -fx-padding: 20;
+    -fx-spacing: 12;
+}
+
+.session-card-header.upcoming {
+    -fx-background-color: linear-gradient(to bottom right, #7209b7, #3a0ca3);
+}
+
+.session-card-header.ongoing {
+    -fx-background-color: linear-gradient(to bottom right, #06d6a0, #1db954);
+}
+
+.session-card-header.completed {
+    -fx-background-color: linear-gradient(to bottom right, #636e72, #2d3436);
+}
+
+.session-card-header.cancelled {
+    -fx-background-color: linear-gradient(to bottom right, #ef476f, #d63d62);
+}
+
+.session-status-badge {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 50;
+    -fx-padding: 4 12;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.session-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.session-group {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+}
+
+.session-card-body {
+    -fx-padding: 20;
+    -fx-spacing: 16;
+}
+
+.session-datetime {
+    -fx-spacing: 12;
+}
+
+.session-date-icon, .session-time-icon {
+    -fx-background-color: rgba(114, 9, 183, 0.1);
+    -fx-background-radius: 8;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #7209b7;
+}
+
+.session-date-text, .session-time-text {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a1a2e;
+}
+
+.session-date-day {
+    -fx-font-size: 12px;
+    -fx-text-fill: #b2bec3;
+}
+
+.session-description {
+    -fx-font-size: 13px;
+    -fx-text-fill: #636e72;
+    -fx-wrap-text: true;
+}
+
+.session-participants {
+    -fx-spacing: 8;
+}
+
+.session-participants-avatars {
+    -fx-spacing: -8;
+}
+
+.session-participant-avatar {
+    -fx-background-radius: 50;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-border-color: white;
+    -fx-border-width: 2;
+    -fx-border-radius: 50;
+    -fx-alignment: CENTER;
+    -fx-font-size: 11px;
+    -fx-text-fill: white;
+}
+
+.session-participants-more {
+    -fx-background-color: #e9ecef;
+    -fx-font-size: 10px;
+    -fx-text-fill: #636e72;
+}
+
+.session-participants-count {
+    -fx-font-size: 12px;
+    -fx-text-fill: #b2bec3;
+}
+
+.session-card-footer {
+    -fx-padding: 16 20;
+    -fx-border-color: #f0f0f0 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-spacing: 8;
+}
+
+.session-action-btn {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+}
+
+.session-join-btn {
+    -fx-background-color: #7209b7;
+    -fx-text-fill: white;
+}
+
+.session-join-btn:hover {
+    -fx-background-color: #5c0891;
+}
+
+.session-details-btn {
+    -fx-text-fill: #7209b7;
+}
+
+.session-details-btn:hover {
+    -fx-background-color: rgba(114, 9, 183, 0.1);
+}
+
+/* ================== CREATE SESSION DIALOG ================== */
+.create-session-dialog {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-min-width: 500;
+}
+
+.create-session-header {
+    -fx-background-color: linear-gradient(to bottom right, #7209b7, #3a0ca3);
+    -fx-background-radius: 16 16 0 0;
+    -fx-padding: 24;
+}
+
+.create-session-body {
+    -fx-padding: 24;
+    -fx-spacing: 20;
+}
+
+.datetime-picker-row {
+    -fx-spacing: 16;
+}
+
+.date-picker, .time-picker {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.date-picker:focused, .time-picker:focused {
+    -fx-border-color: #7209b7;
+}
+
+.duration-picker {
+    -fx-spacing: 8;
+    -fx-alignment: CENTER-LEFT;
+}
+
+.duration-btn {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 16;
+    -fx-cursor: hand;
+}
+
+.duration-btn:hover {
+    -fx-background-color: #e9ecef;
+}
+
+.duration-btn.selected {
+    -fx-background-color: #7209b7;
+    -fx-text-fill: white;
+    -fx-border-color: #7209b7;
+}
+
+/* ================== SESSION DETAILS VIEW ================== */
+.session-details-container {
+    -fx-background-color: #f0f3f7;
+}
+
+.session-details-header {
+    -fx-padding: 32;
+    -fx-background-radius: 0 0 24 24;
+}
+
+.session-details-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.session-details-meta {
+    -fx-spacing: 24;
+    -fx-padding: 16 0;
+}
+
+.session-meta-item {
+    -fx-spacing: 8;
+    -fx-alignment: CENTER-LEFT;
+}
+
+.session-meta-icon {
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-font-size: 16px;
+}
+
+.session-meta-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+}
+
+.session-details-body {
+    -fx-padding: 24;
+    -fx-spacing: 24;
+}
+
+.session-section {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+}
+
+.session-section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a2e;
+    -fx-padding: 0 0 16 0;
+}
+
+/* Participants List */
+.participants-list {
+    -fx-spacing: 12;
+}
+
+.participant-item {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 12;
+    -fx-padding: 12 16;
+    -fx-spacing: 12;
+}
+
+.participant-avatar {
+    -fx-background-radius: 50;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-alignment: CENTER;
+}
+
+.participant-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a1a2e;
+}
+
+.participant-role {
+    -fx-font-size: 12px;
+    -fx-text-fill: #b2bec3;
+}
+
+.participant-status {
+    -fx-background-radius: 50;
+    -fx-padding: 4 12;
+    -fx-font-size: 11px;
+}
+
+.participant-status-confirmed {
+    -fx-background-color: rgba(6, 214, 160, 0.15);
+    -fx-text-fill: #059669;
+}
+
+.participant-status-pending {
+    -fx-background-color: rgba(255, 165, 0, 0.15);
+    -fx-text-fill: #d97706;
+}
+
+/* ================== EMPTY STATE ================== */
+.empty-sessions {
+    -fx-alignment: CENTER;
+    -fx-padding: 60;
+    -fx-spacing: 20;
+}
+
+.empty-sessions-icon {
+    -fx-font-size: 80px;
+    -fx-text-fill: #dfe6e9;
+}
+
+.empty-sessions-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #636e72;
+}
+
+.empty-sessions-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #b2bec3;
+}
+
+.empty-sessions-btn {
+    -fx-background-color: #7209b7;
+    -fx-text-fill: white;
+    -fx-padding: 12 24;
+    -fx-background-radius: 10;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+}
+
+.empty-sessions-btn:hover {
+    -fx-background-color: #5c0891;
+}
+
+/* ================== SESSION LIST VIEW ================== */
+.session-list-item {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 16 20;
+    -fx-spacing: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 4, 0, 0, 2);
+    -fx-cursor: hand;
+}
+
+.session-list-item:hover {
+    -fx-background-color: #fafbff;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4);
+}
+
+.session-list-date {
+    -fx-background-color: rgba(114, 9, 183, 0.1);
+    -fx-background-radius: 10;
+    -fx-padding: 12;
+    -fx-min-width: 60;
+    -fx-alignment: CENTER;
+}
+
+.session-list-date-day {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7209b7;
+}
+
+.session-list-date-month {
+    -fx-font-size: 11px;
+    -fx-text-fill: #9d4edd;
+}
+
+.session-list-info {
+    -fx-spacing: 4;
+}
+
+.session-list-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a1a2e;
+}
+
+.session-list-time {
+    -fx-font-size: 13px;
+    -fx-text-fill: #636e72;
+}
+
+.session-list-group {
+    -fx-font-size: 12px;
+    -fx-text-fill: #b2bec3;
+}
+

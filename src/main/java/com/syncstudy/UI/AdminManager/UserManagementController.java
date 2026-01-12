@@ -160,13 +160,20 @@ public class UserManagementController {
             private final Button viewBtn = new Button("View");
             private final Button blockBtn = new Button("Block");
             private final Button deleteBtn = new Button("Delete");
-            private final HBox buttons = new HBox(5, viewBtn, blockBtn, deleteBtn);
+            private final HBox buttons = new HBox(8, viewBtn, blockBtn, deleteBtn);
 
             {
                 buttons.setAlignment(Pos.CENTER);
-                viewBtn.setStyle("-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-size: 11px;");
-                blockBtn.setStyle("-fx-font-size: 11px;");
-                deleteBtn.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 11px;");
+
+                // Style avec taille minimum pour éviter la troncature
+                viewBtn.setStyle("-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 6; -fx-cursor: hand;");
+                viewBtn.setMinWidth(60);
+
+                blockBtn.setStyle("-fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 6; -fx-cursor: hand;");
+                blockBtn.setMinWidth(70);
+
+                deleteBtn.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 6; -fx-cursor: hand;");
+                deleteBtn.setMinWidth(70);
 
                 viewBtn.setOnAction(e -> handleViewActivity(getTableView().getItems().get(getIndex())));
                 blockBtn.setOnAction(e -> handleBlockUnblock(getTableView().getItems().get(getIndex())));
@@ -182,10 +189,10 @@ public class UserManagementController {
                     User user = getTableView().getItems().get(getIndex());
                     if (user.isBlocked()) {
                         blockBtn.setText("Unblock");
-                        blockBtn.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 11px;");
+                        blockBtn.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 6; -fx-cursor: hand;");
                     } else {
                         blockBtn.setText("Block");
-                        blockBtn.setStyle("-fx-background-color: #ffc107; -fx-text-fill: black; -fx-font-size: 11px;");
+                        blockBtn.setStyle("-fx-background-color: #ffc107; -fx-text-fill: black; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 6; -fx-cursor: hand;");
                     }
                     setGraphic(buttons);
                 }

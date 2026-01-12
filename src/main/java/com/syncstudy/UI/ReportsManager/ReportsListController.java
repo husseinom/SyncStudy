@@ -180,12 +180,20 @@ public class ReportsListController {
             private final Button viewBtn = new Button("View");
             private final Button validateBtn = new Button("✓");
             private final Button rejectBtn = new Button("✗");
-            private final HBox buttons = new HBox(5, viewBtn, validateBtn, rejectBtn);
+            private final HBox buttons = new HBox(8, viewBtn, validateBtn, rejectBtn);
 
             {
-                viewBtn.setStyle("-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 3 8;");
-                validateBtn.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 3 8;");
-                rejectBtn.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 3 8;");
+                buttons.setAlignment(javafx.geometry.Pos.CENTER);
+
+                // Style avec taille minimum pour éviter la troncature
+                viewBtn.setStyle("-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 14; -fx-background-radius: 6; -fx-cursor: hand;");
+                viewBtn.setMinWidth(60);
+
+                validateBtn.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 6 12; -fx-background-radius: 6; -fx-cursor: hand;");
+                validateBtn.setMinWidth(40);
+
+                rejectBtn.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 6 12; -fx-background-radius: 6; -fx-cursor: hand;");
+                rejectBtn.setMinWidth(40);
 
                 viewBtn.setOnAction(e -> {
                     Report report = getTableView().getItems().get(getIndex());

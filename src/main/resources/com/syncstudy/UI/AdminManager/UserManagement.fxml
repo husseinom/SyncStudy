@@ -54,7 +54,7 @@
                     <TableColumn fx:id="registrationColumn" text="Registered" prefWidth="120"/>
                     <TableColumn fx:id="statusColumn" text="Status" prefWidth="80"/>
                     <TableColumn fx:id="lastLoginColumn" text="Last Login" prefWidth="120"/>
-                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="180" sortable="false"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="250" sortable="false"/>
                 </columns>
                 <placeholder>
                     <VBox alignment="CENTER" spacing="10">

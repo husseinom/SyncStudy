@@ -40,8 +40,76 @@ public class AppUI extends Application {
         }
 
         stage.setTitle("SyncStudy - Login");
-        stage.setScene(new Scene(root, 480, 320));
+        Scene scene = new Scene(root, 480, 320);
+        applyGlobalStyles(scene);
+        stage.setScene(scene);
         stage.show();
+    }
+
+    /**
+     * Applique les styles CSS globaux à une scène
+     * @param scene La scène à styliser
+     */
+    public static void applyGlobalStyles(Scene scene) {
+        try {
+            // Styles de base
+            String baseStyles = AppUI.class.getResource("/com/syncstudy/UI/styles/base.css").toExternalForm();
+            String componentStyles = AppUI.class.getResource("/com/syncstudy/UI/styles/components.css").toExternalForm();
+            String layoutStyles = AppUI.class.getResource("/com/syncstudy/UI/styles/layout.css").toExternalForm();
+            String loginStyles = AppUI.class.getResource("/com/syncstudy/UI/styles/login.css").toExternalForm();
+
+            scene.getStylesheets().addAll(baseStyles, componentStyles, layoutStyles, loginStyles);
+        } catch (Exception e) {
+            System.err.println("Warning: Could not load some CSS files: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Applique les styles CSS pour le module Admin
+     * @param scene La scène à styliser
+     */
+    public static void applyAdminStyles(Scene scene) {
+        applyGlobalStyles(scene);
+        try {
+            String adminStyles = AppUI.class.getResource("/com/syncstudy/UI/AdminManager/admin-styles.css").toExternalForm();
+            if (!scene.getStylesheets().contains(adminStyles)) {
+                scene.getStylesheets().add(adminStyles);
+            }
+        } catch (Exception e) {
+            System.err.println("Warning: Could not load admin CSS: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Applique les styles CSS pour le module Group/Category
+     * @param scene La scène à styliser
+     */
+    public static void applyGroupStyles(Scene scene) {
+        applyGlobalStyles(scene);
+        try {
+            String groupStyles = AppUI.class.getResource("/com/syncstudy/UI/GroupManager/group-styles.css").toExternalForm();
+            if (!scene.getStylesheets().contains(groupStyles)) {
+                scene.getStylesheets().add(groupStyles);
+            }
+        } catch (Exception e) {
+            System.err.println("Warning: Could not load group CSS: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Applique les styles CSS pour le module Membership
+     * @param scene La scène à styliser
+     */
+    public static void applyMembershipStyles(Scene scene) {
+        applyGlobalStyles(scene);
+        try {
+            String membershipStyles = AppUI.class.getResource("/com/syncstudy/UI/GroupMembership/membership-styles.css").toExternalForm();
+            if (!scene.getStylesheets().contains(membershipStyles)) {
+                scene.getStylesheets().add(membershipStyles);
+            }
+        } catch (Exception e) {
+            System.err.println("Warning: Could not load membership CSS: " + e.getMessage());
+        }
     }
 
     private void startEmbeddedServer(int port) {
