@@ -7,6 +7,7 @@ import com.syncstudy.BL.ProfileManager.ProfileDAO;
 import com.syncstudy.BL.SessionManager.UserDAO;
 import com.syncstudy.BL.GroupManager.GroupDAO;
 import com.syncstudy.BL.GroupManager.CategoryDAO;
+import com.syncstudy.BL.StudySessionManager.StudySessionDAO;
 import com.syncstudy.BL.ReportsManager.ReportsDAO;
 import com.syncstudy.BL.GroupMembership.GroupMembershipDAO;
 import com.syncstudy.PL.AdminManager.AdminDAOPostgres;
@@ -15,6 +16,7 @@ import com.syncstudy.PL.ProfileManager.ProfileDAOPostgres;
 import com.syncstudy.PL.SessionManager.UserDAOPostgres;
 import com.syncstudy.PL.GroupManager.GroupDAOPostgres;
 import com.syncstudy.PL.GroupManager.CategoryDAOPostgres;
+import com.syncstudy.PL.StudySessionManager.StudySessionDAOPostgres;
 import com.syncstudy.PL.ReportsManager.ReportsDAOPostgres;
 import com.syncstudy.PL.GroupMembership.GroupMembershipDAOPostgres;
 
@@ -40,13 +42,16 @@ public class PostgresFactory extends AbstractFactory {
 
     @Override
     public ProfileDAO createProfileDAO() {
-        return new ProfileDAOPostgres();
-    }
+        return new ProfileDAOPostgres(); }
 
     @Override
     public CategoryDAO createCategoryDAO() {
         return new CategoryDAOPostgres();
     }
+
+    @Override
+    public StudySessionDAO createStudySessionDAO() {return new StudySessionDAOPostgres();}
+
 
     @Override
     public SharedFileDAO createSharedFileDAO() {

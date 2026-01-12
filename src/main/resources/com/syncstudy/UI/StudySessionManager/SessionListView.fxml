@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.syncstudy.UI.StudySessionManager.StudySessionListController">
+    <top>
+        <HBox style="-fx-padding: 10; -fx-spacing: 10;">
+            <Label fx:id="groupTitleLabel" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+            <ComboBox fx:id="filterCombo"/>
+        </HBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true">
+            <VBox fx:id="sessionListContainer" spacing="10" style="-fx-padding: 10;"/>
+        </ScrollPane>
+    </center>
+</BorderPane>

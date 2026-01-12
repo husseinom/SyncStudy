@@ -20,6 +20,14 @@
                     text="Files"
                     onAction="#handleViewFiles"
                     style="-fx-background-color: white; -fx-text-fill: black;"/>
+            <Button fx:id="viewSessionsButton"
+                    text="Sessions"
+                    onAction="#handleViewSessions"
+                    style="-fx-background-color: white; -fx-text-fill: black;"/>
+            <Button fx:id="proposeSessionButton"
+                    text="+ Propose Session"
+                    onAction="#handleProposeSession"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
             <Button fx:id="leaveGroupButton"
                     text="Leave Group"
                     onAction="#handleLeaveGroup"

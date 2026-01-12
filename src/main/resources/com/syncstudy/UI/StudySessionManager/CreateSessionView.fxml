@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.syncstudy.UI.StudySessionManager.CreateSessionController"
+      spacing="10" prefWidth="500" prefHeight="600">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Create Study Session" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+
+    <Label text="Title:"/>
+    <TextField fx:id="titleField" promptText="Enter session title"/>
+
+    <Label text="Description:"/>
+    <TextArea fx:id="descriptionArea" promptText="Enter description" prefRowCount="3"/>
+
+    <Label text="Session Type:"/>
+    <ComboBox fx:id="typeCombo" prefWidth="200"/>
+
+    <Label text="Location Type:"/>
+    <ComboBox fx:id="locationTypeCombo" prefWidth="200"/>
+
+    <Label text="Location:"/>
+    <TextField fx:id="locationValueField" promptText="Enter location"/>
+
+    <VBox fx:id="proposedDatesContainer" spacing="5">
+        <Label text="Proposed Dates (2-4 dates):" style="-fx-font-weight: bold;"/>
+    </VBox>
+
+    <Button fx:id="addDateButton" text="+ Add Another Date" onAction="#handleAddDate"/>
+
+    <Label fx:id="errorLabel" textFill="red" visible="false"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#handleCancel"/>
+        <Button fx:id="createButton" text="Create Session" onAction="#handleCreate"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

@@ -22,10 +22,15 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import com.syncstudy.BL.StudySessionManager.*;
+import com.syncstudy.UI.StudySessionManager.StudySessionListController;
+import com.syncstudy.UI.StudySessionManager.CreateSessionController;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,10 +48,16 @@ public class ChatController {
     @FXML private Button backButton;
     @FXML private Button viewFilesButton;
     @FXML private Button leaveGroupButton;
+    @FXML
+    private Button viewSessionsButton;
+    @FXML
+    private Button proposeSessionButton;
 
     private ChatFacade messageService;
     private FileFacade fileService;
     private GroupMembershipFacade membershipFacade;
+    private StudySessionFacade studysessionFacade;
+    private Set<Long> displayedSessionIds = new HashSet<>();
     private Long currentUserId;
     private Long currentGroupId;
     private boolean isAdmin;
@@ -57,6 +68,7 @@ public class ChatController {
         messageService = ChatFacade.getInstance();
         fileService = FileFacade.getInstance();
         membershipFacade = GroupMembershipFacade.getInstance();
+        studysessionFacade = StudySessionFacade.getInstance();
         errorLabel.setVisible(false);
 
         messageContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
@@ -69,6 +81,525 @@ public class ChatController {
             }
         });
     }
+
+    @FXML
+    private void handleViewSessions() {
+        if (currentGroupId == null) {
+            showError("No group selected");
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/syncstudy/UI/StudySessionManager/SessionListView.fxml"));
+            Parent root = loader.load();
+
+            StudySessionListController controller = loader.getController();
+            String groupName = messageService.getGroupName(currentGroupId);
+            controller.setGroupData(currentGroupId, groupName, currentUserId, isAdmin);
+
+            Stage stage = new Stage();
+            stage.setTitle("Study Sessions - " + groupName);
+            stage.setScene(new javafx.scene.Scene(root, 900, 600));
+            stage.show();
+        } catch (Exception e) {
+            showError("Error opening sessions view: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleProposeSession() {
+        if (currentGroupId == null) {
+            showError("No group selected");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/syncstudy/UI/StudySessionManager/CreateSessionView.fxml"));
+            Parent root = loader.load();
+
+            CreateSessionController controller = loader.getController();
+            controller.setGroupData(currentGroupId, currentUserId, this::onSessionCreated);
+            Stage stage = new Stage();
+            stage.setTitle("Propose Study Session");
+            stage.setScene(new javafx.scene.Scene(root, 600, 700));
+            stage.show();
+        } catch (Exception e) {
+            showError("Error opening create session dialog: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void onSessionCreated(StudySession session) {
+        displaySessionMessage(session);
+
+        if (tcpClient != null) {
+            TcpChatClient.EventEnvelope envelope = new TcpChatClient.EventEnvelope();
+            envelope.type = "session";
+            envelope.data = session;
+            tcpClient.sendEvent(envelope);
+        }
+    }
+
+    private void loadGroupSessions() {
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                return studysessionFacade.getGroupSessions(currentGroupId, "All");
+            } catch (Exception e) {
+                Platform.runLater(() -> showError("Error loading sessions: " + e.getMessage()));
+                return List.<StudySession>of();
+            }
+        }).thenAcceptAsync(sessions -> {
+            for (StudySession session : sessions) {
+                if (!displayedSessionIds.contains(session.getId())) {
+                    displaySessionMessage(session);
+                }
+            }
+            scrollToBottom();
+        }, Platform::runLater);
+    }
+
+    private VBox createSessionMessageBox(StudySession session) {
+        VBox messageBox = new VBox(5);
+        messageBox.setMaxWidth(700);
+        messageBox.setUserData("session_" + session.getId());
+
+        boolean isCreator = session.getCreatorId().equals(currentUserId);
+
+        HBox container = new HBox(10);
+        container.setAlignment(isCreator ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+
+        if (!isCreator) {
+            Circle avatar = new Circle(16);
+            avatar.setFill(Color.LIGHTCORAL);
+            container.getChildren().add(avatar);
+        }
+        VBox bubbleContainer = new VBox(5);
+
+        // Creator name
+        String creatorName = session.getCreatorFullName() != null ?
+                session.getCreatorFullName() : session.getCreatorUsername();
+        Label senderName = new Label(creatorName != null ? creatorName : "Unknown");
+        senderName.setStyle("-fx-font-weight: bold; -fx-font-size: 11;");
+        senderName.setAlignment(isCreator ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+        bubbleContainer.getChildren().add(senderName);
+
+        // Bubble
+        VBox bubble = new VBox(8);
+        bubble.setStyle(isCreator ?
+                "-fx-background-color: #FFE0B2; -fx-background-radius: 10; -fx-padding: 12;" :
+                "-fx-background-color: #FFF3E0; -fx-background-radius: 10; -fx-padding: 12; -fx-border-color: #FFB74D; -fx-border-radius: 10; -fx-border-width: 2;");
+
+        // Session header
+        HBox headerBox = new HBox(10);
+        Label sessionIcon = new Label("📅");
+        sessionIcon.setStyle("-fx-font-size: 20;");
+        VBox titleBox = new VBox(2);
+        Label titleLabel = new Label(session.getTitle());
+        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+
+        Label statusBadge = new Label(session.getStatus().toString());
+        statusBadge.setStyle(getStatusStyle(session.getStatus()));
+
+        titleBox.getChildren().addAll(titleLabel, statusBadge);
+        headerBox.getChildren().addAll(sessionIcon, titleBox);
+        bubble.getChildren().add(headerBox);
+
+        // Session details
+        VBox detailsBox = new VBox(3);
+
+        if (session.getDescription() != null && !session.getDescription().isEmpty()) {
+            Label descLabel = new Label(session.getDescription());
+            descLabel.setWrapText(true);
+            descLabel.setStyle("-fx-font-size: 11; -fx-text-fill: gray;");
+            detailsBox.getChildren().add(descLabel);
+        }
+        if (session.getStatus() == StudySession.SessionStatus.PROPOSED) {
+            Label dateLabel = new Label("🗳️ Voting in progress");
+            dateLabel.setStyle("-fx-font-size: 11;");
+            detailsBox.getChildren().add(dateLabel);
+
+            if (session.getVotingDeadline() != null) {
+                Label deadlineLabel = new Label("Voting deadline: " +
+                        session.getVotingDeadline().format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")));
+                deadlineLabel.setStyle("-fx-font-size: 10; -fx-text-fill: gray;");
+                detailsBox.getChildren().add(deadlineLabel);
+            }
+        } else if (session.getSessionDate() != null) {
+            Label dateLabel = new Label("📆 " +
+                    session.getSessionDate().format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")));
+            dateLabel.setStyle("-fx-font-size: 11;");
+            detailsBox.getChildren().add(dateLabel);
+        }
+
+        Label locationLabel = new Label("📍 " + session.getLocation().getDisplayValue());
+        locationLabel.setStyle("-fx-font-size: 11;");
+        detailsBox.getChildren().add(locationLabel);
+        Label participantsLabel = new Label("👥 " + session.getParticipantCount() +
+                (session.getMaxParticipants() > 0 ? "/" + session.getMaxParticipants() : "") + " participants");
+        participantsLabel.setStyle("-fx-font-size: 11;");
+        detailsBox.getChildren().add(participantsLabel);
+
+        bubble.getChildren().add(detailsBox);
+
+        // Action buttons
+        HBox actionBox = new HBox(5);
+
+        if (session.getStatus() == StudySession.SessionStatus.PROPOSED) {
+            Button voteButton = new Button("Vote");
+            voteButton.setStyle("-fx-font-size: 10; -fx-background-color: #FF9800; -fx-text-fill: white;");
+            voteButton.setOnAction(e -> handleVoteDialog(session));
+            actionBox.getChildren().add(voteButton);
+
+            Button proposeDateButton = new Button("Propose Date");
+            proposeDateButton.setStyle("-fx-font-size: 10; -fx-background-color: #9C27B0; -fx-text-fill: white;");
+            proposeDateButton.setOnAction(e -> handleProposeDate(session));
+            actionBox.getChildren().add(proposeDateButton);
+        }
+        Button viewDetailsButton = new Button("View Details");
+        viewDetailsButton.setStyle("-fx-font-size: 10; -fx-background-color: #2196F3; -fx-text-fill: white;");
+        viewDetailsButton.setOnAction(e -> handleViewSessionDetails(session));
+        actionBox.getChildren().add(viewDetailsButton);
+
+        try {
+            boolean isRegistered = studysessionFacade.isUserRegistered(session.getId(), currentUserId);
+            if (isRegistered) {
+                Button unregisterButton = new Button("Unregister");
+                unregisterButton.setStyle("-fx-font-size: 10; -fx-background-color: #F44336; -fx-text-fill: white;");
+                unregisterButton.setOnAction(e -> handleUnregisterSession(session));
+                actionBox.getChildren().add(unregisterButton);
+            } else if (studysessionFacade.canUserRegister(session.getId())) {
+                Button registerButton = new Button("Register");
+                registerButton.setStyle("-fx-font-size: 10; -fx-background-color: #4CAF50; -fx-text-fill: white;");
+                registerButton.setOnAction(e -> handleRegisterSession(session));
+                actionBox.getChildren().add(registerButton);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        bubble.getChildren().add(actionBox);
+
+        bubbleContainer.getChildren().add(bubble);
+
+        // Timestamp
+        if (session.getCreatedAt() != null) {
+            Label timestamp = new Label(session.getCreatedAt().format(DateTimeFormatter.ofPattern("HH:mm")));
+            timestamp.setStyle("-fx-font-size: 10; -fx-text-fill: gray;");
+            bubbleContainer.getChildren().add(timestamp);
+        }
+        container.getChildren().add(bubbleContainer);
+        messageBox.getChildren().add(container);
+
+        return messageBox;
+    }
+
+
+    private void displaySessionMessage(StudySession session) {
+        if (displayedSessionIds.contains(session.getId())) {
+            return;
+        }
+        displayedSessionIds.add(session.getId());
+
+        VBox sessionBox = createSessionMessageBox(session);
+        messageContainer.getChildren().add(sessionBox);
+        scrollToBottom();
+    }
+
+    private void handleVoteDialog(StudySession session) {
+        try {
+            List<ProposedDate> dates = studysessionFacade.getProposedDates(session.getId());
+            List<Long> userVotes = studysessionFacade.getUserVotes(session.getId(), currentUserId);
+
+            if (dates.isEmpty()) {
+                showError("No proposed dates available");
+                return;
+            }
+
+            Dialog<ButtonType> voteDialog = new Dialog<>();
+            voteDialog.setTitle("Vote for Date");
+            voteDialog.setHeaderText("Select your preferred date(s) for: " + session.getTitle());
+
+            VBox content = new VBox(10);
+            List<CheckBox> checkBoxes = new ArrayList<>();
+
+            for (ProposedDate date : dates) {
+                CheckBox cb = new CheckBox(date.getProposedDateTime().format(
+                        DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")) +
+                        " - " + date.getVoteCount() + " votes");
+                cb.setSelected(userVotes.contains(date.getId()));
+                cb.setUserData(date.getId());
+                checkBoxes.add(cb);
+                content.getChildren().add(cb);
+            }
+
+            voteDialog.getDialogPane().setContent(content);
+            voteDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            voteDialog.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    for (CheckBox cb : checkBoxes) {
+                        Long dateId = (Long) cb.getUserData();
+                        if (cb.isSelected() && !userVotes.contains(dateId)) {
+                            studysessionFacade.voteForDate(dateId, currentUserId, session.getId());
+                        }
+                    }
+                    showSuccess("Votes recorded!");
+
+                    if (tcpClient != null) {
+                        TcpChatClient.EventEnvelope envelope = new TcpChatClient.EventEnvelope();
+                        envelope.type = "session-vote";
+                        envelope.id = session.getId();
+                        tcpClient.sendEvent(envelope);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            showError("Error loading dates: " + e.getMessage());
+        }
+    }
+
+
+    private void handleProposeDate(StudySession session) {
+        Dialog<ProposedDate> dialog = new Dialog<>();
+        dialog.setTitle("Propose New Date");
+        dialog.setHeaderText("Propose a new date for: " + session.getTitle());
+
+        VBox content = new VBox(15);
+        content.setPrefWidth(400);
+
+        Label instruction = new Label("Select a date and time for this session:");
+        instruction.setStyle("-fx-font-weight: bold;");
+
+        HBox dateTimeBox = new HBox(10);
+        dateTimeBox.setAlignment(Pos.CENTER_LEFT);
+
+        DatePicker datePicker = new DatePicker();
+        datePicker.setPromptText("Select date");
+        datePicker.setPrefWidth(150);
+
+        Label timeLabel = new Label("Time:");
+
+        Spinner<Integer> hourSpinner = new Spinner<>(0, 23, 14);
+        hourSpinner.setPrefWidth(70);
+        hourSpinner.setEditable(true);
+
+        Label colonLabel = new Label(":");
+
+        Spinner<Integer> minuteSpinner = new Spinner<>(0, 59, 0, 15);
+        minuteSpinner.setPrefWidth(70);
+        minuteSpinner.setEditable(true);
+
+        dateTimeBox.getChildren().addAll(datePicker, timeLabel, hourSpinner, colonLabel, minuteSpinner);
+
+        Label errorLabel = new Label();
+        errorLabel.setTextFill(Color.RED);
+        errorLabel.setVisible(false);
+
+        content.getChildren().addAll(instruction, dateTimeBox, errorLabel);
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        okButton.addEventFilter(ActionEvent.ACTION, event -> {
+            if (datePicker.getValue() == null) {
+                errorLabel.setText("Please select a date");
+                errorLabel.setVisible(true);
+                event.consume();
+                return;
+            }
+
+            int hour = hourSpinner.getValue();
+            int minute = minuteSpinner.getValue();
+
+            LocalDateTime proposedDateTime = LocalDateTime.of(
+                    datePicker.getValue().getYear(),
+                    datePicker.getValue().getMonth(),
+                    datePicker.getValue().getDayOfMonth(),
+                    hour,
+                    minute,
+                    0
+            );
+
+            if (proposedDateTime.isBefore(LocalDateTime.now())) {
+                errorLabel.setText("Proposed date must be in the future");
+                errorLabel.setVisible(true);
+                event.consume();
+            }
+        });
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK && datePicker.getValue() != null) {
+                int hour = hourSpinner.getValue();
+                int minute = minuteSpinner.getValue();
+
+                LocalDateTime proposedDateTime = LocalDateTime.of(
+                        datePicker.getValue().getYear(),
+                        datePicker.getValue().getMonth(),
+                        datePicker.getValue().getDayOfMonth(),
+                        hour,
+                        minute,
+                        0
+                );
+
+                ProposedDate proposedDate = new ProposedDate();
+                proposedDate.setProposedDateTime(proposedDateTime);
+                return proposedDate;
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(proposedDate -> {
+            try {
+                studysessionFacade.addProposedDate(session.getId(), proposedDate);
+                showSuccess("Date proposed successfully!");
+
+                StudySession updatedSession = studysessionFacade.getSession(session.getId());
+                if (updatedSession != null) {
+                    VBox existingBox = null;
+                    for (javafx.scene.Node node : messageContainer.getChildren()) {
+                        if (("session_" + session.getId()).equals(node.getUserData())) {
+                            existingBox = (VBox) node;
+                            break;
+                        }
+                    }
+
+                    if (existingBox != null) {
+                        int index = messageContainer.getChildren().indexOf(existingBox);
+                        VBox newBox = createSessionMessageBox(updatedSession);
+                        messageContainer.getChildren().set(index, newBox);
+                    }
+                }
+            } catch (Exception e) {
+                showError("Failed to propose date: " + e.getMessage());
+            }
+        });
+    }
+
+
+
+    private void handleViewSessionDetails(StudySession session) {
+        // Open detailed view (you can create a separate FXML for this)
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Session Details");
+        alert.setHeaderText(session.getTitle());
+
+        StringBuilder content = new StringBuilder();
+        content.append("Status: ").append(session.getStatus()).append("\n");
+        content.append("Creator: ").append(session.getCreatorFullName()).append("\n");
+
+        if (session.getDescription() != null) {
+            content.append("Description: ").append(session.getDescription()).append("\n");
+        }
+        if (session.getSessionDate() != null) {
+            content.append("Date: ").append(session.getSessionDate().format(
+                    DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"))).append("\n");
+        }
+
+        content.append("Location: ").append(session.getLocation().getDisplayValue()).append("\n");
+        content.append("Participants: ").append(session.getParticipantCount());
+
+        if (session.getMaxParticipants() > 0) {
+            content.append("/").append(session.getMaxParticipants());
+        }
+
+        alert.setContentText(content.toString());
+        alert.showAndWait();
+    }
+
+    private void handleRegisterSession(StudySession session) {
+        try {
+            boolean success = studysessionFacade.registerForSession(session.getId(), currentUserId);
+            if (success) {
+                showSuccess("Registered successfully!");
+                loadMessages();
+                updateSessionMessage(session.getId());
+
+                if (tcpClient != null) {
+                    TcpChatClient.EventEnvelope env = new TcpChatClient.EventEnvelope();
+                    env.type = "session-update";
+                    env.id = session.getId();
+                    tcpClient.sendEvent(env);
+                }
+            }
+        } catch (Exception e) {
+            showError("Registration failed: " + e.getMessage());
+        }
+    }
+
+    private void handleUnregisterSession(StudySession session) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Unregister");
+        confirm.setHeaderText("Unregister from session?");
+        confirm.setContentText("Are you sure you want to unregister from: " + session.getTitle());
+
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    studysessionFacade.unregisterFromSession(session.getId(), currentUserId);
+                    showSuccess("Unregistered successfully!");
+                    loadMessages();
+                    updateSessionMessage(session.getId());
+
+
+                    if (tcpClient != null) {
+                        TcpChatClient.EventEnvelope env = new TcpChatClient.EventEnvelope();
+                        env.type = "session-update";
+                        env.id = session.getId();
+                        tcpClient.sendEvent(env);
+                    }
+                } catch (Exception e) {
+                    showError("Unregister failed: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void updateSessionMessage(Long sessionId) {
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                // fetch updated sessions for the group and find the one we need
+                List<StudySession> sessions = studysessionFacade.getGroupSessions(currentGroupId, "All");
+                for (StudySession s : sessions) {
+                    if (s.getId() != null && s.getId().equals(sessionId)) return s;
+                }
+                return null;
+            } catch (Exception e) {
+                Platform.runLater(() -> showError("Error updating session: " + e.getMessage()));
+                return null;
+            }
+        }).thenAcceptAsync(updatedSession -> {
+            if (updatedSession == null) return;
+
+            // find existing message node by userData and replace it in-place
+            for (javafx.scene.Node node : new ArrayList<>(messageContainer.getChildren())) {
+                Object ud = node.getUserData();
+                if (ud != null && ud.equals("session_" + sessionId)) {
+                    int index = messageContainer.getChildren().indexOf(node);
+                    VBox newBox = createSessionMessageBox(updatedSession);
+                    messageContainer.getChildren().set(index, newBox);
+                    return;
+                }
+            }
+
+            // if not found (e.g. new session), append and track it
+            messageContainer.getChildren().add(createSessionMessageBox(updatedSession));
+            displayedSessionIds.add(sessionId);
+            scrollToBottom();
+        }, Platform::runLater);
+    }
+
+
+    private String getStatusStyle(StudySession.SessionStatus status) {
+        return switch (status) {
+            case PROPOSED -> "-fx-background-color: #FF9800; -fx-text-fill: white; -fx-padding: 2 6; -fx-background-radius: 3; -fx-font-size: 9;";
+            case CONFIRMED -> "-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 2 6; -fx-background-radius: 3; -fx-font-size: 9;";
+            case CANCELLED -> "-fx-background-color: #F44336; -fx-text-fill: white; -fx-padding: 2 6; -fx-background-radius: 3; -fx-font-size: 9;";
+            case COMPLETED -> "-fx-background-color: #9E9E9E; -fx-text-fill: white; -fx-padding: 2 6; -fx-background-radius: 3; -fx-font-size: 9;";
+        };
+    }
+
+
 
     @FXML
     private void handleBackToGroups(ActionEvent event) {
@@ -175,7 +706,9 @@ public class ChatController {
         this.currentGroupId = groupId;
         groupNameLabel.setText(getCurrentGroupName());
         displayedFileIds.clear();
+        displayedSessionIds.clear();
         loadMessages();
+        loadGroupSessions();
         initializeRealtimeConnection();
     }
 
@@ -704,6 +1237,45 @@ public class ChatController {
                             ("file_" + env.id).equals(node.getUserData()));
                 }
                 break;
+            case "session":
+                if (env.data instanceof StudySession) {
+                    StudySession session = (StudySession) env.data;
+                    displaySessionMessage(session);
+                }
+                break;
+            case "session-update":
+            case "session-vote":
+            case "session-register":
+                if (env.id != null) {
+                    // Find existing session box
+                    VBox existingBox = null;
+                    for (javafx.scene.Node node : messageContainer.getChildren()) {
+                        if (("session_" + env.id).equals(node.getUserData())) {
+                            existingBox = (VBox) node;
+                            break;
+                        }
+                    }
+
+                    try {
+                        StudySession updated = studysessionFacade.getSession(env.id);
+                        if (updated != null) {
+                            if (existingBox != null) {
+                                // Update in place
+                                int index = messageContainer.getChildren().indexOf(existingBox);
+                                messageContainer.getChildren().remove(existingBox);
+                                VBox newBox = createSessionMessageBox(updated);
+                                messageContainer.getChildren().add(index, newBox);
+                            } else {
+                                // Add new
+                                displaySessionMessage(updated);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
             case "edit":
             case "delete":
                 loadMessages();
@@ -717,8 +1289,8 @@ public class ChatController {
     private void handleReportMessage(Message message) {
         showReportDialog(
             message.getSenderId(),
-            "Message: " + (message.getContent().length() > 100 
-                ? message.getContent().substring(0, 100) + "..." 
+            "Message: " + (message.getContent().length() > 100
+                ? message.getContent().substring(0, 100) + "..."
                 : message.getContent())
         );
     }
