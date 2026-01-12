@@ -125,6 +125,15 @@ public class StudySessionListController {
         detailsBtn.setOnAction(e -> handleViewDetails(session));
         buttonBox.getChildren().add(detailsBtn);
 
+// In the button section, after the View Details button:
+        if (session.getStatus() == StudySession.SessionStatus.PROPOSED && (isAdmin || session.getCreatorId().equals(userId))) {
+            Button confirmBtn = new Button("Confirm");
+            confirmBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+            confirmBtn.setOnAction(e -> handleConfirmSession(session));
+            buttonBox.getChildren().add(confirmBtn);
+        }
+
+
         card.getChildren().addAll(headerBox, descLabel, detailsBox, buttonBox);
         return card;
     }

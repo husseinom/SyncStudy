@@ -255,6 +255,15 @@ public class ChatController {
             proposeDateButton.setOnAction(e -> handleProposeDate(session));
             actionBox.getChildren().add(proposeDateButton);
         }
+
+        if (session.getStatus() == StudySession.SessionStatus.PROPOSED &&
+                (isCreator || isAdmin)) {
+            Button confirmButton = new Button("Confirm Session");
+            confirmButton.setStyle("-fx-font-size: 10; -fx-background-color: #4CAF50; -fx-text-fill: white;");
+            confirmButton.setOnAction(e -> handleConfirmSession(session));
+            actionBox.getChildren().add(confirmButton);
+        }
+
         Button viewDetailsButton = new Button("View Details");
         viewDetailsButton.setStyle("-fx-font-size: 10; -fx-background-color: #2196F3; -fx-text-fill: white;");
         viewDetailsButton.setOnAction(e -> handleViewSessionDetails(session));
@@ -292,6 +301,52 @@ public class ChatController {
 
         return messageBox;
     }
+
+    private void handleConfirmSession(StudySession session) {
+        try {
+            ProposedDate mostVoted = studysessionFacade.getMostVotedDate(session.getId());
+
+            if (mostVoted == null) {
+                showError("No votes yet. Cannot confirm session.");
+                return;
+            }
+
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Confirm Session");
+            confirm.setHeaderText("Confirm session with most voted date?");
+            confirm.setContentText("Selected Date: " +
+                    mostVoted.getProposedDateTime().format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")) +
+                    "\nVotes: " + mostVoted.getVoteCount());
+
+            confirm.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    try {
+                        studysessionFacade.finalizeProposedSession(
+                                session.getId(),
+                                mostVoted.getId(),
+                                currentUserId,
+                                isAdmin
+                        );
+                        showSuccess("Session confirmed successfully!");
+                        updateSessionMessage(session.getId());
+
+                        // Broadcast update to other clients
+                        if (tcpClient != null) {
+                            TcpChatClient.EventEnvelope envelope = new TcpChatClient.EventEnvelope();
+                            envelope.type = "session-update";
+                            envelope.data = studysessionFacade.getSession(session.getId());
+                            tcpClient.sendEvent(envelope);
+                        }
+                    } catch (Exception e) {
+                        showError("Failed to confirm: " + e.getMessage());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            showError("Error: " + e.getMessage());
+        }
+    }
+
 
 
     private void displaySessionMessage(StudySession session) {
