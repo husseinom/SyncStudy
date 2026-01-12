@@ -3,6 +3,8 @@ package com.syncstudy.UI.ChatManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.syncstudy.BL.ChatManager.Message;
+import com.syncstudy.BL.FileManager.SharedFile;
+import com.syncstudy.BL.StudySessionManager.StudySession;
 import javafx.application.Platform;
 
 import java.io.*;
@@ -57,6 +59,21 @@ public class TcpChatClient {
                     final String json = line;
                     try {
                         EventEnvelope env = gson.fromJson(json, EventEnvelope.class);
+                        if (env.type != null && env.data != null) {
+                            String dataJson = gson.toJson(env.data);
+                            switch (env.type) {
+                                case "file":
+                                case "file-delete":
+                                    env.data = gson.fromJson(dataJson, SharedFile.class);
+                                    break;
+                                case "session":
+                                case "session-update":
+                                case "session-vote":
+                                case "session-register":
+                                    env.data = gson.fromJson(dataJson, StudySession.class);
+                                    break;
+                            }
+                        }
                         Platform.runLater(() -> controller.handleRemoteEnvelope(env));
                     } catch (Exception e) {
                         System.err.println("Failed to parse envelope: " + e.getMessage());
